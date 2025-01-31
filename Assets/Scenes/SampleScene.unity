@@ -228,8 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea22792576a076a46b5638d6390e53ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1: {fileID: 1666745243998150060, guid: d2a7dcdd71ea6c84f9e51a060d366814, type: 3}
-  player2: {fileID: 1666745243998150060, guid: 12ba5eb39b781ee45a999a192f77f447, type: 3}
   target: {fileID: 0}
   offset: {x: 0, y: 0, z: 0}
   smoothTime: 0.15
@@ -406,7 +404,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.06, y: -3.93, z: 0}
-  m_LocalScale: {x: 19.45, y: 2.3, z: 1}
+  m_LocalScale: {x: 100, y: 2.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

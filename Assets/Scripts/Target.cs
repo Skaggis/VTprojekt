@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class Target : MonoBehaviour
 {
-    public Transform player1;
-    public Transform player2;
     public Transform target;
     public Vector3 offset;
     //zeros out velocity
@@ -18,18 +18,36 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        //starta neutralt
+        target = transform;
     }
     private void LateUpdate()
     {
+        //hastighet(mjukhet i rörelse?
         transform.position = Vector3.SmoothDamp(transform.position, 
-            new Vector3(target.position.x, 0, -10f), ref velocity, 0.2f);
+         new Vector3(0, 0, -10f), ref velocity, 0.2f);
     }
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(player1.position);
-       transform.position = new Vector3(player1.position.x + 4, 0, -10); // Camera follows the player1 but 4 to the right
-       //transform.position = new Vector3(player1.position.x + offset.x, 0, -10);
+        //om ingen atrget angetts vid död,
+        //återgå till neutral
+        if (target == null)
+        {
+            target = transform;
+        }
+        else
+        {
+            //följ target
+            transform.position = new Vector3(target.transform.position.x, 0, -10);
+
+        }
+
+    }
+
+    public void LockOn(Transform currentTarget)
+    {
+        //matas av DeathTracker i Manager
+        target = currentTarget;
     }
 }

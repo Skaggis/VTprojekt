@@ -340,7 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Manager: {fileID: 0}
-  playerHP: 3
+  playerHP: 1
   movementSpeed: 5
   jumpSpeed: 8
   isPlayer1: 1

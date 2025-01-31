@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Player : MonoBehaviour
     public int movementSpeed;
     public int jumpSpeed;
     public bool isPlayer1 = false;
-    private Rigidbody2D rb2D;
+    public Rigidbody2D Rb2D;
     float input1X;
     float input1Y;
     float input2X;
@@ -20,7 +21,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         Manager = GameObject.FindWithTag("Manager").gameObject;
-        rb2D = gameObject.GetComponent<Rigidbody2D>();
+        Rb2D = gameObject.GetComponent<Rigidbody2D>();
 
     }
     void Update()
@@ -45,23 +46,23 @@ public class Player : MonoBehaviour
     
         if (isPlayer1 == true)
         {
-            rb2D.AddForce(transform.right * movementSpeed * input1X);
-            //rb2D.AddForce(transform.up * movementSpeed * input1Y);
+            Rb2D.AddForce(transform.right * movementSpeed * input1X);
+            //Rb2D.AddForce(transform.up * movementSpeed * input1Y);
             // Check if the player presses the jump key (space bar)
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 // Apply an upward force to the Rigidbody
-                rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
+                Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
             }
         }
         else
         {
-            rb2D.AddForce(transform.right * movementSpeed * input2X);
-            //rb2D.AddForce(transform.up * movementSpeed * input2Y);
+            Rb2D.AddForce(transform.right * movementSpeed * input2X);
+            //Rb2D.AddForce(transform.up * movementSpeed * input2Y);
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 // Apply an upward force to the Rigidbody
-                rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
+                Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
             }
         }
 
