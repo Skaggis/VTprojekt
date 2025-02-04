@@ -4,87 +4,113 @@ using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEngine.RuleTile.TilingRuleOutput;
+using static UnityEditor.PlayerSettings;
+//using static UnityEngine.RuleTile.TilingRuleOutput;
+
 
 public class Manager : MonoBehaviour
 {
-    public Camera cam;
+    public GameObject cam;
     public GameObject Player1;
     public GameObject Player2;
-    private GameObject inst2;
     private GameObject inst1;
-
-
+    private GameObject inst2;
+    public Transform initialSpawnP1;
+    public Transform initialSpawnP2;
+    public Transform spawnP1;
+    public Transform spawnP2;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(Spawner());
-        //cam = GameObject.Find("Main Camera").gameObject;
+        cam = GameObject.Find("Main Camera").gameObject;
+        //cam = GetComponent<Camera>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        //komma åt viewport rect 
-        Vector2 screenPoint = Camera.main.WorldToViewportPoint(Screen.width, Screen.height);
+        /*
+        Vector3 screenPoint = Camera.main.WorldToViewportPoint(new Vector3(Screen.width, Screen.height, Camera.main.farClipPlane / 2));
+        //Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
+
+
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log(cam.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.width, Camera.main.farClipPlane / 2));
+            Debug.Log(screenPoint);
         }
+        */
+
     }
-    /*
-    void OnDrawGizmosSelected()
-    {
-        
-        Vector3 p = Camera.main.ViewportToWorldPoint(new Vector2(cam.width, cam.hight, 1));
-        Vector2 screenPoint = Camera.main.WorldToViewportPoint(point);
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(p, 0.1F);
-    }
-    */
+
     IEnumerator Spawner()
     {
-        bool initialSpawn = true;
+        Vector2 initialSpawnP1minusZ = initialSpawnP1.transform.position;
+        Vector2 initialSpawnP2minusZ = initialSpawnP2.transform.position;
+        Vector2 spawnP1minusZ = spawnP1.transform.position;
+        Vector2 spawnP2minusZ = spawnP2.transform.position;
 
-        while (true)
+        bool initialSpawn = true;
+        //initialSpawnPoint i bild
+        if (inst1 == null && inst2 == null && initialSpawn == true)
         {
-            //om båda dör och ska "initialSpawn:a" igen, skapa ny bool variabel
-            //och släng in i villkor nedan
-            //eller koord för initialspawn? kör samma koord igen?
-            if (inst1 == null)
-                {
-                if (initialSpawn == false)
-                {
-                    //if initialSpawn = false, spawna helt t.v om camViewport?
-                    yield return new WaitForSeconds(5);
-                }
-                //ändra till vänster sida i Viewport
-                inst1 = Instantiate(Player1, new Vector3(-3, 0, 0), Quaternion.identity);
-                inst1.GetComponent<Player>().isPlayer1 = true;
-                Debug.Log("player1 spawned");
-                    
-                }
             
+            inst1 = Instantiate(Player1, initialSpawnP1minusZ, Quaternion.identity);
+            inst1.GetComponent<Player>().isPlayer1 = true;
+            Debug.Log("P1 spawned");
+
+            inst2 = Instantiate(Player2, initialSpawnP2minusZ, Quaternion.identity);
+            inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+            Debug.Log("P2 spawned");
+
+            initialSpawn = false;
+
+            while (initialSpawn == false)
+            {
+                //initialSpawnPoint i bild
+                if (inst1 == null && inst2 == null)
+                {
+                    yield return new WaitForSeconds(1);
+                    initialSpawnP1minusZ = initialSpawnP1.transform.position;
+                    inst1 = Instantiate(Player1, initialSpawnP1minusZ, Quaternion.identity);
+                    inst1.GetComponent<Player>().isPlayer1 = true;
+                    initialSpawnP2minusZ = initialSpawnP2.transform.position;
+                    inst2 = Instantiate(Player2, initialSpawnP2minusZ, Quaternion.identity);
+                    inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+                }
+
+                if (inst1 == null)
+                {
+                    yield return new WaitForSeconds(3);
+                    //spawnPoint utanför bild
+                    //vänster om Viewport
+                    spawnP1minusZ = spawnP1.transform.position;
+                    inst1 = Instantiate(Player1, spawnP1minusZ, Quaternion.identity);
+                    inst1.GetComponent<Player>().isPlayer1 = true;
+                    Debug.Log("P1 spawned");
+
+                }
+
                 if (inst2 == null)
                 {
-                if (initialSpawn == false)
-                {
-                    //if initialSpawn = false, spawna t.h om cam
-                    yield return new WaitForSeconds(5);
+                    yield return new WaitForSeconds(3);
+                    //spawnPoint utanför bild
+                    //höger om Viewport
+                    spawnP2minusZ = spawnP2.transform.position;
+                    inst2 = Instantiate(Player2, spawnP2minusZ, Quaternion.identity);
+                    inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+                    Debug.Log("P2 spawned");
                 }
-                //ändra till vänster sida i Viewport
-                inst2 = Instantiate(Player2, new Vector3(+3, 0, 0), Quaternion.identity);
-                inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
-                Debug.Log("player2 spawned");
 
 
-            }
-            initialSpawn = false;
                 yield return null;
+            }
+            
+
         }
-        
+       
     }
 
     public void DeathTracker(GameObject objDestroy)

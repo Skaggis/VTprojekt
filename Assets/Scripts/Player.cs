@@ -34,8 +34,8 @@ public class Player : MonoBehaviour
 
         if (isPlayer1 == true)
         {
-            input1X = Input.GetAxis("Horizontal_Player1");
-            input1Y = Input.GetAxis("Vertical_Player1");
+            input1X = Input.GetAxisRaw("Horizontal_Player1");
+            input1Y = Input.GetAxisRaw("Vertical_Player1");
 
             if (Input.GetKeyDown(KeyCode.H))
             {
@@ -131,7 +131,7 @@ public class Player : MonoBehaviour
 
     public void damageTaken(int damageTaken)
     {
-        //ändrar prefab objektet, inte instancen
+      //matas av Weapon-script
         playerHP = playerHP - damageTaken;
         Debug.Log("Player was hit\nHP: " + playerHP);
 
