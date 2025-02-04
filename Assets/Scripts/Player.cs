@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public GameObject Manager;
     public int playerHP = 3;
     public int movementSpeed;
-    public int jumpSpeed;
+    public float jumpSpeed;
     public bool isPlayer1 = false;
     public Rigidbody2D Rb2D;
     public Animator animator;
@@ -83,12 +83,15 @@ public class Player : MonoBehaviour
         if (isPlayer1 == true && isJumping == true)
         {
             // Apply an upward force to the Rigidbody
-            Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
+            //Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
 
-            /*
-            Rb2D.AddForce(Vector2.up * jumpHeight); // you need a reference to the RigidBody2D component
-            isJumping = true;
-            */
+            
+            Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+            //isJumping = true;
+            //Rb2D.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+            //public vector2 jumpHeight;
+            //addForce(jumpHeight, ForceMode2D.Impulse);
+
         }
         //ger andra spelaren P2-kontrolelr
         if (isPlayer1 == false)
@@ -115,6 +118,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            //funkar ej?
             isGrounded = false;
             Debug.Log("Not Grounded!");
         }
