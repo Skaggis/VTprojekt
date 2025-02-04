@@ -100,6 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player1: {fileID: 5645951320268626478}
   Player2: {fileID: 5645951320268626478, guid: 12ba5eb39b781ee45a999a192f77f447, type: 3}
+  Rigidbody2: {fileID: 0}
 --- !u!61 &9123313865745946340
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -245,6 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player1: {fileID: 5645951320268626478}
   Player2: {fileID: 5187284031384112442, guid: 094bc867cffd24848bffa421eded0539, type: 3}
+  Rigidbody2: {fileID: 0}
 --- !u!61 &3682552941201172716
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -303,6 +305,7 @@ GameObject:
   - component: {fileID: -7579112883605389097}
   - component: {fileID: 1601212475319343533}
   - component: {fileID: 5491537300798860804}
+  - component: {fileID: 6496588996817800226}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Player1
@@ -341,9 +344,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Manager: {fileID: 0}
   playerHP: 1
-  movementSpeed: 5
-  jumpSpeed: 8
-  isPlayer1: 1
+  movementSpeed: 10
+  jumpSpeed: 5
+  isPlayer1: 0
+  Rb2D: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!50 &-7579112883605389097
 Rigidbody2D:
   serializedVersion: 4
@@ -468,3 +473,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!95 &6496588996817800226
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5645951320268626478}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0936ab661fccb324ebd20e583ad22b34, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

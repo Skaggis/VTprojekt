@@ -70,23 +70,30 @@ public class Manager : MonoBehaviour
     public void DeathTracker(GameObject objDestroy)
     {
         //kameran byter lock-on
+
         //om bara P1 finns
+        //funkar inte!
         if (inst2 == objDestroy)
         {
+            cam.GetComponent<Target>().LockOn(inst1.transform);
             Debug.Log("p1 target");
             //börjar följa först när spelaren närmar sig kanten av viewport
             //funkar inte
+            /*
             if (inst1.transform.position.x == 7)
             {
                 cam.GetComponent<Target>().LockOn(inst1.transform);
             }
+            */
             
         }
         //om bara P2 finns
+        //funkar!
         if (inst1 == objDestroy)
         {
-            //inst1.transform.position.x == -7
+            //if (inst1.transform.position.x == -7){}
             cam.GetComponent<Target>().LockOn(inst2.transform);
+            Debug.Log("p2 target");
         }
 
         Debug.Log("destroyed" + objDestroy.name);

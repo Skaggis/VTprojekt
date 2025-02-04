@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-
+        //uteslut den andra
         if (other.tag == "Player1" || other.tag == "Player2")
         {
             
@@ -36,7 +36,8 @@ public class Weapon : MonoBehaviour
             other.GetComponent<RigidBody2D>().isKinematic = true;
             */
 
-        }
 
+        }
     }
 }
+

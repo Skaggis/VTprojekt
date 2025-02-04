@@ -14,7 +14,9 @@ public class Target : MonoBehaviour
     //time to follow target
     public float smoothTime = .15f;
 
-
+    /*
+     * https://stackoverflow.com/questions/35746459/moving-a-camera-from-its-current-position-to-a-specific-position-smoothly-in-un
+     * */
     // Start is called before the first frame update
     void Start()
     {
