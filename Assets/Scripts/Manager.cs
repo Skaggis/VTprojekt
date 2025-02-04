@@ -39,9 +39,10 @@ public class Manager : MonoBehaviour
                 {
                 if (initialSpawn == false)
                 {
+                    //if initialSpawn = false, spawna t.v om cam
                     yield return new WaitForSeconds(5);
                 }
-                
+                //ändra till vänster sida i Viewport
                 inst1 = Instantiate(Player1, new Vector3(-3, 0, 0), Quaternion.identity);
                 inst1.GetComponent<Player>().isPlayer1 = true;
                 Debug.Log("player1 spawned");
@@ -52,9 +53,10 @@ public class Manager : MonoBehaviour
                 {
                 if (initialSpawn == false)
                 {
+                    //if initialSpawn = false, spawna t.h om cam
                     yield return new WaitForSeconds(5);
                 }
-                
+                //ändra till vänster sida i Viewport
                 inst2 = Instantiate(Player2, new Vector3(+3, 0, 0), Quaternion.identity);
                 inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                 Debug.Log("player2 spawned");
@@ -72,11 +74,13 @@ public class Manager : MonoBehaviour
         //kameran byter lock-on
 
         //om bara P1 finns
-        //funkar inte!
         if (inst2 == objDestroy)
         {
             cam.GetComponent<Target>().LockOn(inst1.transform);
             Debug.Log("p1 target");
+
+            //toggla sprite "RUN ->" 
+
             //börjar följa först när spelaren närmar sig kanten av viewport
             //funkar inte
             /*
@@ -85,13 +89,13 @@ public class Manager : MonoBehaviour
                 cam.GetComponent<Target>().LockOn(inst1.transform);
             }
             */
-            
+
         }
         //om bara P2 finns
-        //funkar!
         if (inst1 == objDestroy)
         {
-            //if (inst1.transform.position.x == -7){}
+            //toggla sprite "RUN ->" 
+
             cam.GetComponent<Target>().LockOn(inst2.transform);
             Debug.Log("p2 target");
         }
@@ -99,15 +103,6 @@ public class Manager : MonoBehaviour
         Debug.Log("destroyed" + objDestroy.name);
         Destroy(objDestroy);
 
-
-
-        
-        /* om båda döda
-        if (inst1 == null && inst2 == null)
-        {
-            cam.GetComponent<Target>().LockOn(cam.transform);
-        }
-        */
 
     }
 }

@@ -345,7 +345,7 @@ MonoBehaviour:
   Manager: {fileID: 0}
   playerHP: 1
   movementSpeed: 10
-  jumpSpeed: 1
+  jumpSpeed: 5
   isPlayer1: 0
   Rb2D: {fileID: 0}
   animator: {fileID: 0}

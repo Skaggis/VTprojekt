@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     float input2Y;
     bool isJumping = false;
     //bool isStabbing = false;
-    bool isGrounded = true;
+    bool isGrounded;
 
     // Start is called before the first frame update
     void Start()
@@ -41,11 +41,11 @@ public class Player : MonoBehaviour
             {
                 animator.SetTrigger("stab");
             }
-            if (Input.GetKeyDown(KeyCode.Space) && isJumping == false)
+
+            if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
-                isGrounded = false;
-
+               
 
             }
         }
@@ -58,10 +58,10 @@ public class Player : MonoBehaviour
             {
                 animator.SetTrigger("stab");
             }
-            if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
-                isGrounded = false;
+              
             }
         }
 
@@ -75,6 +75,7 @@ public class Player : MonoBehaviour
     //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
+            //stoppa helt om man inte rör sig 
             Rb2D.AddForce(transform.right * movementSpeed * input1X);
 
 
@@ -82,45 +83,48 @@ public class Player : MonoBehaviour
         //kollar om P1 + hopp
         if (isPlayer1 == true && isJumping == true)
         {
-            // Apply an upward force to the Rigidbody
-            //Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
 
-            
             Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
-            //isJumping = true;
-            //Rb2D.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-            //public vector2 jumpHeight;
-            //addForce(jumpHeight, ForceMode2D.Impulse);
+            isJumping = false;
+            isGrounded = false;
+
 
         }
         //ger andra spelaren P2-kontrolelr
         if (isPlayer1 == false)
         {
             Rb2D.AddForce(transform.right * movementSpeed * input2X);
-            //Rb2D.AddForce(transform.up * movementSpeed * input2Y);
+
 
         }
         //kollar om P2 + hopp
         if (isPlayer1 == false && isJumping == true)
         {
             // Apply an upward force to the Rigidbody
-            Rb2D.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
+            Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+            isJumping = false;
+            isGrounded = false;
 
         }
 
     }
+    
     private void OnCollisionStay2D(Collision2D other)
     {
+    
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
             Debug.Log("Grounded");
         }
-        else
+
+    }
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.transform.tag == "Ground")
         {
-            //funkar ej?
             isGrounded = false;
-            Debug.Log("Not Grounded!");
+            Debug.Log("NOT grounded");
         }
     }
 
