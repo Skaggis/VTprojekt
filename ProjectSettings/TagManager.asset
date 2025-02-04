@@ -9,6 +9,8 @@ TagManager:
   - Weapon
   - Manager
   - Ground
+  - Goal_P1
+  - Goal_P2
   layers:
   - Default
   - TransparentFX

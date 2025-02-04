@@ -108,7 +108,20 @@ public class Player : MonoBehaviour
         }
 
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (isPlayer1 == true && other.tag == "Goal_P1")
+        {
+            Debug.Log("P1 WIN");
+
+        }
+        if (isPlayer1 == false && other.tag == "Goal_P2")
+        {
+            Debug.Log("P2 WIN");
+
+        }
+    }
     private void OnCollisionStay2D(Collision2D other)
     {
     
