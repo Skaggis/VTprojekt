@@ -25,6 +25,7 @@ public class Target : MonoBehaviour
         //starta neutralt
         target = transform;
     }
+
     private void LateUpdate()
     {
         //hastighet(mjukhet i rörelse?

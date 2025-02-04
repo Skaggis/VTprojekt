@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -7,7 +8,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Manager : MonoBehaviour
 {
-    public GameObject cam;
+    public Camera cam;
     public GameObject Player1;
     public GameObject Player2;
     private GameObject inst2;
@@ -19,14 +20,30 @@ public class Manager : MonoBehaviour
     void Start()
     {
         StartCoroutine(Spawner());
-        cam = GameObject.Find("Main Camera").gameObject;
+        //cam = GameObject.Find("Main Camera").gameObject;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //komma åt viewport rect 
+        Vector2 screenPoint = Camera.main.WorldToViewportPoint(Screen.width, Screen.height);
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log(cam.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.width, Camera.main.farClipPlane / 2));
+        }
     }
+    /*
+    void OnDrawGizmosSelected()
+    {
+        
+        Vector3 p = Camera.main.ViewportToWorldPoint(new Vector2(cam.width, cam.hight, 1));
+        Vector2 screenPoint = Camera.main.WorldToViewportPoint(point);
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(p, 0.1F);
+    }
+    */
     IEnumerator Spawner()
     {
         bool initialSpawn = true;
@@ -35,11 +52,12 @@ public class Manager : MonoBehaviour
         {
             //om båda dör och ska "initialSpawn:a" igen, skapa ny bool variabel
             //och släng in i villkor nedan
+            //eller koord för initialspawn? kör samma koord igen?
             if (inst1 == null)
                 {
                 if (initialSpawn == false)
                 {
-                    //if initialSpawn = false, spawna t.v om cam
+                    //if initialSpawn = false, spawna helt t.v om camViewport?
                     yield return new WaitForSeconds(5);
                 }
                 //ändra till vänster sida i Viewport
