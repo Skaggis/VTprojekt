@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         //uteslut den andra
-        if (other.tag == "Player1" || other.tag == "Player2")
+        if (other.tag == "Player1" || other.tag == "Player2") //&& jag/denna inst har fart
         {
             
             other.GetComponent<Player>().damageTaken(1);

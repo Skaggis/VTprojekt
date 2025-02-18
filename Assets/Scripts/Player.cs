@@ -37,11 +37,12 @@ public class Player : MonoBehaviour
             input1X = Input.GetAxisRaw("Horizontal_Player1");
             input1Y = Input.GetAxisRaw("Vertical_Player1");
 
+            //stab attack
             if (Input.GetKeyDown(KeyCode.H))
             {
                 animator.SetTrigger("stab");
             }
-
+            //hopp
             if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
@@ -54,10 +55,12 @@ public class Player : MonoBehaviour
             input2X = Input.GetAxis("Horizontal_Player2");
             input2Y = Input.GetAxis("Vertical_Player2");
 
+            //stab attack
             if (Input.GetKeyDown(KeyCode.G))
             {
                 animator.SetTrigger("stab");
             }
+            //hopp
             if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
@@ -76,6 +79,7 @@ public class Player : MonoBehaviour
         if (isPlayer1 == true)
         {
             //stoppa helt om man inte rör sig 
+            //sakta åtminstone ner mkt mer
             Rb2D.AddForce(transform.right * movementSpeed * input1X);
 
 
@@ -83,7 +87,7 @@ public class Player : MonoBehaviour
         //kollar om P1 + hopp
         if (isPlayer1 == true && isJumping == true)
         {
-
+            //upward force Rigidbody
             Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
             isJumping = false;
             isGrounded = false;
@@ -93,14 +97,15 @@ public class Player : MonoBehaviour
         //ger andra spelaren P2-kontrolelr
         if (isPlayer1 == false)
         {
+            //stoppa helt om man inte rör sig 
+            //sakta åtminstone ner mkt mer
             Rb2D.AddForce(transform.right * movementSpeed * input2X);
-
 
         }
         //kollar om P2 + hopp
         if (isPlayer1 == false && isJumping == true)
         {
-            // Apply an upward force to the Rigidbody
+            //upward force Rigidbody
             Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
             isJumping = false;
             isGrounded = false;
