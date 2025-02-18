@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
     float input2X;
     float input2Y;
     bool isJumping = false;
-    //bool isStabbing = false;
     bool isGrounded;
+    public SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
         Manager = GameObject.FindWithTag("Manager").gameObject;
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
 
     }
     void Update()
@@ -35,18 +37,24 @@ public class Player : MonoBehaviour
         if (isPlayer1 == true)
         {
             input1X = Input.GetAxisRaw("Horizontal_Player1");
+            /*
+            walking 0-0,25
+            run 0,25-0,5
+            sprint 0,5
+            */
             input1Y = Input.GetAxisRaw("Vertical_Player1");
 
             //stab attack
             if (Input.GetKeyDown(KeyCode.H))
             {
-                animator.SetTrigger("stab");
+                animator.SetTrigger("hit");
             }
             //hopp
             if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
                
+
 
             }
         }
@@ -58,13 +66,14 @@ public class Player : MonoBehaviour
             //stab attack
             if (Input.GetKeyDown(KeyCode.G))
             {
-                animator.SetTrigger("stab");
+                animator.SetTrigger("hit");
             }
             //hopp
             if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
-              
+               
+
             }
         }
 
@@ -78,10 +87,15 @@ public class Player : MonoBehaviour
     //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
-            //stoppa helt om man inte rör sig 
-            //sakta åtminstone ner mkt mer
+            animator.SetFloat("walking", Mathf.Abs(input1X));
+            spriteRenderer.flipX = false;
             Rb2D.AddForce(transform.right * movementSpeed * input1X);
 
+            if (input1X < 0)
+            {
+                spriteRenderer.flipX = true;
+                
+            }
 
         }
         //kollar om P1 + hopp
@@ -89,6 +103,9 @@ public class Player : MonoBehaviour
         {
             //upward force Rigidbody
             Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+
+            animator.SetTrigger("jump");
+            //JumpDescending, dela spriten upp beroende på fallhöjd
             isJumping = false;
             isGrounded = false;
 
@@ -101,12 +118,17 @@ public class Player : MonoBehaviour
             //sakta åtminstone ner mkt mer
             Rb2D.AddForce(transform.right * movementSpeed * input2X);
 
+            //anim walking + värden
+
         }
         //kollar om P2 + hopp
         if (isPlayer1 == false && isJumping == true)
         {
             //upward force Rigidbody
             Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+
+            animator.SetTrigger("jump");
+
             isJumping = false;
             isGrounded = false;
 

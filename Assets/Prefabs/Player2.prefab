@@ -323,7 +323,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 363270614229266831}
@@ -349,6 +349,7 @@ MonoBehaviour:
   isPlayer1: 0
   Rb2D: {fileID: 0}
   animator: {fileID: 0}
+  spriteRenderer: {fileID: 0}
 --- !u!50 &-7579112883605389097
 Rigidbody2D:
   serializedVersion: 4
@@ -435,7 +436,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5645951320268626478}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -483,7 +484,7 @@ Animator:
   m_GameObject: {fileID: 5645951320268626478}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0130eb915875e6743ad9225256a524e4, type: 2}
+  m_Controller: {fileID: 9100000, guid: 69bcbdac56d65fc4a9f680585e6a1130, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
