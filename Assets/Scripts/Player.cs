@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     bool isJumping = false;
     bool isGrounded;
     public SpriteRenderer spriteRenderer;
+    //public bool activeChild = false;
+    private GameObject fist;
+    private GameObject sword;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +31,11 @@ public class Player : MonoBehaviour
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        sword = this.gameObject.transform.GetChild(0).gameObject;
+        sword.SetActive(false);
+        fist = this.gameObject.transform.GetChild(1).gameObject;
+        fist.SetActive(false);
+        
 
 
     }
@@ -36,34 +44,64 @@ public class Player : MonoBehaviour
 
         if (isPlayer1 == true)
         {
-            input1X = Input.GetAxisRaw("Horizontal_Player1");
+            input1X = Input.GetAxis("Horizontal_Player1");
             input1Y = Input.GetAxis("Vertical_Player1");
 
-            //stab attack
+            //stab attack WASD
             if (Input.GetKeyDown(KeyCode.H))
             {
                 animator.SetTrigger("hit");
+
             }
-            //hopp
+            //stab attack joystick
+            if (Input.GetKeyDown(KeyCode.Joystick1Button2))
+            {
+                animator.SetTrigger("hit");
+                //funktion setactive på childobject
+                //via animationEvent i "hit"
+
+            }
+            //hopp WASD
             if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
+            {
+                isJumping = true;
+                /*AnimatorStateInfo();
+                 * event utplacerat, vänta tills hela animationen jump är klart
+                //innan descend EV ska spelas
+                 * */
+            }
+            //hopp joystick
+            if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
             }
             //pil uppåt kastar
             //pil neråt crouchar
         }
+       
         else
         {
             input2X = Input.GetAxis("Horizontal_Player2");
             input2Y = Input.GetAxis("Vertical_Player2");
 
-            //stab attack
+            //stab attack WASD
             if (Input.GetKeyDown(KeyCode.G))
             {
                 animator.SetTrigger("hit");
             }
-            //hopp
+            //stab attack joystick
+            if (Input.GetKeyDown(KeyCode.Joystick2Button2))
+            {
+                animator.SetTrigger("hit");
+
+            }
+            //hopp WASD
             if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
+            {
+                isJumping = true;
+            }
+            //hopp joystick
+            if (Input.GetKeyDown(KeyCode.Joystick2Button1) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
             }
@@ -97,19 +135,22 @@ public class Player : MonoBehaviour
         //kollar om P1 + hopp
         if (isPlayer1 == true && isJumping == true)
         {
-            //JumpDescending, dela spriten upp beroende på fallhöjd
-            //Falling - Not Grounded and Y Velocity/jumpSpeed? less than 0
+            //upward force Rigidbody
+            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
 
             animator.SetTrigger("jump");
-            animator.SetTrigger("descend");
+            //denna anim har event som kör funktion för fall
 
-            //upward force Rigidbody
-            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
-           
-            
+            /*
+            JumpDescending - Not Grounded and Y Velocity/jumpSpeed less than 0?
+             * anim event i slutet av jump
+             * kallar på funktion som räknar på hastighet/avstånd?
+             * triggar Descend - animator.SetTrigger("JumpDescending");
+             * */
 
             isJumping = false;
             isGrounded = false;
+           
 
         }
 
@@ -137,7 +178,9 @@ public class Player : MonoBehaviour
             //JumpDescending, dela spriten upp beroende på fallhöjd
             animator.SetTrigger("jump");
             //upward force Rigidbody
-            Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+            //Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
+
+            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
 
             isJumping = false;
             isGrounded = false;
@@ -165,6 +208,8 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
+            animator.SetTrigger("jumpDescending");
+            //raycast ist?
             Debug.Log("Grounded");
         }
 
@@ -194,5 +239,20 @@ public class Player : MonoBehaviour
         
     }
 
+    public void activeChild(int activeChild)
+    {
+        if (activeChild == 1)
+        {
+            fist.SetActive(true);
+        }
+            
+    }
+    public void inactivateChild(int inactivateChild)
+    {
+        if (inactivateChild == 1)
+        {
+            fist.SetActive(false);
+        }
+    }
 }
 

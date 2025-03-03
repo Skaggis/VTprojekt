@@ -27,7 +27,8 @@ public class Weapon : MonoBehaviour
         //uteslut den andra
         if (other.tag == "Player1" || other.tag == "Player2") //&& jag/denna inst har fart
         {
-            
+            //P2 dödar båda om båda har fists
+            //P1 dödar P2
             other.GetComponent<Player>().damageTaken(1);
             
             //se till att de inte puttar varandra
@@ -38,6 +39,8 @@ public class Weapon : MonoBehaviour
 
 
         }
+
+
     }
 }
 
