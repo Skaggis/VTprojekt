@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,6 +8,7 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     public GameObject Manager;
+    public GameObject Ground;
     public int playerHP = 3;
     public int movementSpeed;
     public float jumpSpeed;
@@ -20,14 +22,15 @@ public class Player : MonoBehaviour
     bool isJumping = false;
     bool isGrounded;
     public SpriteRenderer spriteRenderer;
-    //public bool activeChild = false;
     private GameObject fist;
     private GameObject sword;
+    public bool GroundInSight;
 
     // Start is called before the first frame update
     void Start()
     {
-        Manager = GameObject.FindWithTag("Manager").gameObject;
+        Manager = GameObject.FindWithTag("Manager");
+        Ground = GameObject.FindWithTag("Ground");
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -38,6 +41,7 @@ public class Player : MonoBehaviour
         
 
 
+
     }
     void Update()
     {
@@ -46,6 +50,7 @@ public class Player : MonoBehaviour
         {
             input1X = Input.GetAxis("Horizontal_Player1");
             input1Y = Input.GetAxis("Vertical_Player1");
+            Debug.Log("input1X: "+input1X);
 
             //stab attack WASD
             if (Input.GetKeyDown(KeyCode.H))
@@ -112,9 +117,32 @@ public class Player : MonoBehaviour
 
 
     // Update is called once per frame
+    //Fixed Update = physics update
     void FixedUpdate()
     {
-    //kollar vem som är P1 för att få rätt kontroller
+        //raycast
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
+        GroundInSight = false;
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.CompareTag("Ground"))
+            {
+                GroundInSight = true;
+                Debug.Log("GroundInSight T");
+                Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+            }
+
+        }
+        if(GroundInSight == false)
+        {
+            Vector2 rayEnd = transform.position + Vector3.down * 10;
+            Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
+        }
+        
+
+
+        //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
             animator.SetFloat("walking", Mathf.Abs(input1X));
@@ -122,12 +150,15 @@ public class Player : MonoBehaviour
 
             if (input1X < 0)
             {
-                spriteRenderer.flipX = true;
-                
+              
+                //spriteRenderer.flipX = true;
+                transform.localScale = new Vector3(-5, 5, 5);
+
             }
             if (input1X > 0)
             {
-                spriteRenderer.flipX = false;
+                //spriteRenderer.flipX = false;
+                transform.localScale = new Vector3(5, 5, 5);
 
             }
 
@@ -162,12 +193,12 @@ public class Player : MonoBehaviour
 
             if (input2X > 0)
             {
-                spriteRenderer.flipX = true;
+                transform.localScale = new Vector3(-5, 5, 5);
 
             }
             if (input2X < 0)
             {
-                spriteRenderer.flipX = false;
+                transform.localScale = new Vector3(5, 5, 5);
 
             }
 
@@ -208,7 +239,7 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
-            animator.SetTrigger("jumpDescending");
+            animator.SetTrigger("descend");
             //raycast ist?
             Debug.Log("Grounded");
         }
@@ -228,12 +259,22 @@ public class Player : MonoBehaviour
     {
       //matas av Weapon-script
         playerHP = playerHP - damageTaken;
-        Debug.Log("Player was hit\nHP: " + playerHP);
+        //Debug.Log("Player was hit\nHP: " + playerHP);
 
 
         if (playerHP <= 0)
         {
+            animator.SetTrigger("dead");
+            //anim event funktion med raderna nedan
             playerHP = 0;
+            //Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
+        }
+        
+    }
+    public void killInstance(int killInst)
+    {
+        if (killInst == 1)
+        {
             Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
         
@@ -241,6 +282,7 @@ public class Player : MonoBehaviour
 
     public void activeChild(int activeChild)
     {
+
         if (activeChild == 1)
         {
             fist.SetActive(true);
