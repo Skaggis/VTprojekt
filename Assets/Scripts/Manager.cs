@@ -43,6 +43,22 @@ public class Manager : MonoBehaviour
         }
         */
 
+
+        //se till att hela spriten syns
+        /*
+        Vector3 position = transform.position;
+
+        float distance = transform.position.z - Camera.main.transform.position.z;
+        float leftBorder = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, distance)).x + halfPlayerHeight*2;
+        float rightBorder = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, distance)).x - halfPlayerHeight*2;
+        float upBorder = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, distance)).y - halfPlayerHeight*2;
+        float downBorder = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, distance)).y + halfPlayerHeight*2;
+
+        position.x = Mathf.Clamp(position.x, leftBorder, rightBorder);
+        position.y = Mathf.Clamp(position.y, downBorder, upBorder);
+        transform.position = position;
+        */
+
     }
 
     IEnumerator Spawner()

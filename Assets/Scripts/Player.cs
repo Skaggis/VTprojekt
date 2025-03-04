@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public float jumpSpeed;
     public bool isPlayer1 = false;
     public Rigidbody2D Rb2D;
+    public BoxCollider2D Bc2D;
     public Animator animator;
     float input1X;
     float input1Y;
@@ -25,26 +26,30 @@ public class Player : MonoBehaviour
     private GameObject fist;
     private GameObject sword;
     public bool GroundInSight;
+    private float halfPlayerHeight;
 
+    public Vector2 colliderDimensions;
     // Start is called before the first frame update
     void Start()
     {
         Manager = GameObject.FindWithTag("Manager");
         Ground = GameObject.FindWithTag("Ground");
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
+        Bc2D = gameObject.GetComponent<BoxCollider2D>();
         animator = gameObject.GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         sword = this.gameObject.transform.GetChild(0).gameObject;
         sword.SetActive(false);
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
-        
-
+        halfPlayerHeight = GetComponent<BoxCollider2D>().size.y / 2;
+        colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.x, GetComponent<BoxCollider2D>().size.y);
 
 
     }
     void Update()
     {
+        //Bc2D.size = colliderDimensions;
 
         if (isPlayer1 == true)
         {
@@ -70,10 +75,7 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
             {
                 isJumping = true;
-                /*AnimatorStateInfo();
-                 * event utplacerat, vänta tills hela animationen jump är klart
-                //innan descend EV ska spelas
-                 * */
+
             }
             //hopp joystick
             if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isJumping == false && isGrounded == true)
@@ -88,6 +90,7 @@ public class Player : MonoBehaviour
         {
             input2X = Input.GetAxis("Horizontal_Player2");
             input2Y = Input.GetAxis("Vertical_Player2");
+            Debug.Log("input2X: " + input2X);
 
             //stab attack WASD
             if (Input.GetKeyDown(KeyCode.G))
@@ -122,25 +125,34 @@ public class Player : MonoBehaviour
     {
         //raycast
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
+        //"default" falsk, rött streck
         GroundInSight = false;
+        Vector2 rayEnd = transform.position + Vector3.down * 10;
+        Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
 
+        //för varje träff cast:en gör
         foreach (RaycastHit2D hit in hits)
         {
+            //om tagg = ground, gult streck
             if (hit.collider.CompareTag("Ground"))
             {
-                GroundInSight = true;
+                
                 Debug.Log("GroundInSight T");
                 Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+
+                Transform target = hit.transform;
+                float distanceToTarget = Vector2.Distance(transform.position, target.position);
+                //Debug.Log("dist: " + distanceToTarget); 8.128206
+                //Debug.Log("playerheight: " + halfPlayerHeight); 1.6
+
+                if (distanceToTarget < halfPlayerHeight * 10)
+                {
+                    GroundInSight = true;
+                    //animator.SetTrigger("descend");
+                }
             }
 
         }
-        if(GroundInSight == false)
-        {
-            Vector2 rayEnd = transform.position + Vector3.down * 10;
-            Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
-        }
-        
-
 
         //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
@@ -193,12 +205,12 @@ public class Player : MonoBehaviour
 
             if (input2X > 0)
             {
-                transform.localScale = new Vector3(-5, 5, 5);
+                transform.localScale = new Vector3(5, 5, 5);
 
             }
             if (input2X < 0)
             {
-                transform.localScale = new Vector3(5, 5, 5);
+                transform.localScale = new Vector3(-5, 5, 5);
 
             }
 
@@ -239,7 +251,7 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
-            animator.SetTrigger("descend");
+            //animator.SetTrigger("descend");
             //raycast ist?
             Debug.Log("Grounded");
         }
@@ -271,15 +283,30 @@ public class Player : MonoBehaviour
         }
         
     }
+    //anim event jump
+    public void rayCast(int ray)
+    {
+
+        if ((ray == 1) && (GroundInSight = true))
+        {
+            animator.SetTrigger("descend");
+
+        }
+
+    }
+    //anim event dead
     public void killInstance(int killInst)
     {
         if (killInst == 1)
         {
+            //collidern ändras inte
+            colliderDimensions = new Vector2 (GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
+            
             Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
         
     }
-
+    //anim event hit
     public void activeChild(int activeChild)
     {
 
@@ -289,6 +316,7 @@ public class Player : MonoBehaviour
         }
             
     }
+    //anim event hit
     public void inactivateChild(int inactivateChild)
     {
         if (inactivateChild == 1)

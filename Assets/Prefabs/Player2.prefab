@@ -343,13 +343,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Manager: {fileID: 0}
+  Ground: {fileID: 0}
   playerHP: 1
   movementSpeed: 10
   jumpSpeed: 5
   isPlayer1: 0
   Rb2D: {fileID: 0}
+  Bc2D: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  GroundInSight: 0
+  colliderDimensions: {x: 0, y: 0}
 --- !u!50 &-7579112883605389097
 Rigidbody2D:
   serializedVersion: 4
@@ -472,7 +476,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.17934595, y: 0.4789996}
+  m_Size: {x: 0.1846518, y: 0.4882577}
   m_EdgeRadius: 0
 --- !u!95 &1332807388587575799
 Animator:
