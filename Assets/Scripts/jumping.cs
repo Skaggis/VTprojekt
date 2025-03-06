@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
         {
             input1X = Input.GetAxis("Horizontal_Player1");
             input1Y = Input.GetAxis("Vertical_Player1");
-            Debug.Log("input1X: "+input1X);
+            Debug.Log("input1X: " + input1X);
 
             //stab attack WASD
             if (Input.GetKeyDown(KeyCode.H))
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
             //pil uppåt kastar
             //pil neråt crouchar
         }
-       
+
         else
         {
             input2X = Input.GetAxis("Horizontal_Player2");
@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
             //om tagg = ground, gult streck
             if (hit.collider.CompareTag("Ground"))
             {
-                
+
                 Debug.Log("GroundInSight T");
                 Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
 
@@ -163,7 +163,7 @@ public class Player : MonoBehaviour
 
             if (input1X < 0)
             {
-              
+
                 //spriteRenderer.flipX = true;
                 transform.localScale = new Vector3(-5, 5, 5);
 
@@ -194,7 +194,7 @@ public class Player : MonoBehaviour
 
             isJumping = false;
             isGrounded = false;
-           
+
 
         }
 
@@ -248,7 +248,7 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionStay2D(Collision2D other)
     {
-    
+
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
@@ -270,7 +270,7 @@ public class Player : MonoBehaviour
 
     public void damageTaken(int damageTaken)
     {
-      //matas av Weapon-script
+        //matas av Weapon-script
         playerHP = playerHP - damageTaken;
         //Debug.Log("Player was hit\nHP: " + playerHP);
 
@@ -282,7 +282,7 @@ public class Player : MonoBehaviour
             playerHP = 0;
             //Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
-        
+
     }
     //anim event jump
     public void rayCast(int ray)
@@ -302,11 +302,11 @@ public class Player : MonoBehaviour
         if (killInst == 1)
         {
             //collidern ändras inte
-            colliderDimensions = new Vector2 (GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
-            
+            colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
+
             Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
-        
+
     }
     //anim event hit
     public void activeChild(int activeChild)
@@ -316,7 +316,7 @@ public class Player : MonoBehaviour
         {
             fist.SetActive(true);
         }
-            
+
     }
     //anim event hit
     public void inactivateChild(int inactivateChild)
