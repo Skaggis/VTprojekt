@@ -74,8 +74,8 @@ public class jumping : MonoBehaviour
     void FixedUpdate()
     {
         //raycast
-        GroundInSight = false;
-        Debug.Log("FALSE Sight");
+        //GroundInSight = false;
+
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
         //Vector2 rayStart = transform.position + Vector3.down * halfPlayerHeight;
         Vector2 rayEnd = transform.position + Vector3.down * 10;
@@ -88,42 +88,33 @@ public class jumping : MonoBehaviour
             //om tagg = ground, gult streck
             if (hit.collider.CompareTag("Ground"))
             {
-                
-                Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
-
                 Transform target = hit.transform;
                 float distanceToTarget = Vector2.Distance(transform.position, hit.point);
-               // Debug.Log("dist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
 
-                //stopp vid: dist1.66811 / 2 playerheight: 1.6
-
-                if (distanceToTarget <= halfPlayerHeight)
+                //denna if-sats körs fortfarande bara ibland!?
+                //halfsize 1.6
+                if (distanceToTarget <= halfPlayerHeight+1)
                 {
                     GroundInSight = true;
-                 
+                    Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+                    //nu får descendfunktionen köras, den kallas av anim event i inAir
+
                     Debug.Log("dist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
-                    animator.SetTrigger("descend");
+                    
+                }
+                else
+                {
+                    GroundInSight = false;
+                    animator.SetBool("descend", false);
+                    Debug.Log("else\ndist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
                 }
    
             }
 
-        }
-
-        //kollar om P1 + hopp
-        if (isPlayer1 == true && isJumping == true)
-        {
-            //upward force Rigidbody
-            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
-
-            animator.SetTrigger("jump");
-            //denna anim har event som kör funktion för fall när GroundInSight = true
-            //som ligger i raycasten
-
-            isJumping = false;
-            isGrounded = false;
-
 
         }
+
+
         //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
@@ -145,7 +136,22 @@ public class jumping : MonoBehaviour
             }
 
         }
+        //kollar om P1 + hopp
+        if (isPlayer1 == true && isJumping == true)
+        {
+            //upward force Rigidbody
+            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+
+            animator.SetTrigger("jump");
+            //denna anim har event som kör funktion för inAir 
+
+
+            isJumping = false;
+            isGrounded = false;
+
+
         }
+    }
     
 
     private void OnCollisionStay2D(Collision2D other)
@@ -165,26 +171,25 @@ public class jumping : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = false;
-            Debug.Log("NOT grounded");
+
         }
     }
-
-    //anim event jump
-    //körs en gång, GroundInSight hinner ej bli T
-    /*
-    public void rayCast(int ray)
+  
+  
+    //anim event i inAir
+    //körs en gång, GroundInSight hinner ej bli T?
+    public void descend()
     {
       
             if (GroundInSight == true)
             {
                 Debug.Log("descending!!!!!!!!!!!!!!!!!");
-                animator.SetTrigger("descend");
+                animator.SetBool("descend", true);
+                //animator.SetTrigger("descend");
 
-            }
-        
-
+        }
 
     }
-    */
+    
 }
 

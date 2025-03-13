@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
         Ground = GameObject.FindWithTag("Ground");
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         Bc2D = gameObject.GetComponent<BoxCollider2D>();
+
         animator = gameObject.GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         sword = this.gameObject.transform.GetChild(0).gameObject;
@@ -43,8 +44,8 @@ public class Player : MonoBehaviour
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
 
-        halfPlayerHeight = GetComponent<BoxCollider2D>().size.y / 2;
-        colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.x, GetComponent<BoxCollider2D>().size.y);
+        halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
+        //colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.x, GetComponent<BoxCollider2D>().size.y);
 
 
     }
@@ -125,10 +126,12 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         //raycast
+        //GroundInSight = false;
+
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
-        GroundInSight = false;
+        //Vector2 rayStart = transform.position + Vector3.down * halfPlayerHeight;
         Vector2 rayEnd = transform.position + Vector3.down * 10;
-        //"default" falsk, rött streck
+
         Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
 
         //för varje träff cast:en gör
@@ -137,23 +140,32 @@ public class Player : MonoBehaviour
             //om tagg = ground, gult streck
             if (hit.collider.CompareTag("Ground"))
             {
-                
-                Debug.Log("GroundInSight T");
-                Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
-
                 Transform target = hit.transform;
-                float distanceToTarget = Vector2.Distance(transform.position, target.position);
-                //Debug.Log("dist: " + distanceToTarget); 8.128206
-                //Debug.Log("playerheight: " + halfPlayerHeight); 1.6
+                float distanceToTarget = Vector2.Distance(transform.position, hit.point);
 
-                if (distanceToTarget < halfPlayerHeight * 10)
+                //denna if-sats körs fortfarande bara ibland!?
+                //halfsize 1.6
+                if (distanceToTarget <= halfPlayerHeight + 1)
                 {
                     GroundInSight = true;
-                    //animator.SetTrigger("descend");
+                    Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+                    //nu får descendfunktionen köras, den kallas av anim event i inAir
+
+                    Debug.Log("dist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
+
                 }
+                else
+                {
+                    GroundInSight = false;
+                    animator.SetBool("descend", false);
+                    Debug.Log("else\ndist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
+                }
+
             }
 
+
         }
+
 
         //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
@@ -285,13 +297,13 @@ public class Player : MonoBehaviour
         
     }
     //anim event jump
-    public void rayCast(int ray)
+    public void descend()
     {
 
-        if ((ray == 1) && (GroundInSight = true))
+        if (GroundInSight == true)
         {
             Debug.Log("!!!!!!!!!!!!!!!!!descending");
-            animator.SetTrigger("descend");
+            animator.SetBool("descend", true);
 
         }
 
