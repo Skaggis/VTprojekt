@@ -51,7 +51,6 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        //Bc2D.size = colliderDimensions;
 
         if (isPlayer1 == true)
         {
@@ -171,11 +170,12 @@ public class Player : MonoBehaviour
         if (isPlayer1 == true)
         {
             animator.SetFloat("walking", Mathf.Abs(input1X));
-            Rb2D.AddForce(transform.right * movementSpeed * input1X);
+            //Rb2D.AddForce(transform.right * movementSpeed * input1X);
+           // Rb2D.MovePosition(Rb2D.position + Vector2.right * input1X * movementSpeed * Time.deltaTime);
+            //Rb2D.AddRelativeForce(Vector3.forward * (movementSpeed*Rb2D.mass));
 
             if (input1X < 0)
             {
-              
                 //spriteRenderer.flipX = true;
                 transform.localScale = new Vector3(-5, 5, 5);
 
@@ -186,16 +186,21 @@ public class Player : MonoBehaviour
                 transform.localScale = new Vector3(5, 5, 5);
 
             }
-
         }
         //kollar om P1 + hopp
         if (isPlayer1 == true && isJumping == true)
         {
-            //upward force Rigidbody
-            Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
-
-            animator.SetTrigger("jump");
+            
             //denna anim har event som kör funktion för fall när GroundInSight = true
+            animator.SetTrigger("jump");
+            //ännu ett anim event kör funktion för upward force Rigidbody
+            //
+            //böjer knäna på marknivå - hoppar senare men för lågt :)
+            
+
+            //////////TEST HOPP////////////////////
+            //för lågt hopp - funkar bara me dynamic Rb?
+            //Rb2D.MovePosition(Rb2D.position + Vector2.up * input1X * jumpSpeed * Time.deltaTime);
 
             /*
             JumpDescending - Not Grounded && Y Velocity/neråt less than 0? krocka ej med crouch
@@ -231,12 +236,12 @@ public class Player : MonoBehaviour
         //kollar om P2 + hopp
         if (isPlayer1 == false && isJumping == true)
         {
-            //JumpDescending, dela spriten upp beroende på fallhöjd
+            //JumpDescending, dela upp spriten beroende på fallhöjd
             animator.SetTrigger("jump");
             //upward force Rigidbody
-            //Rb2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse); // you need a reference to the RigidBody2D component
-
+            //böjer knäna i luften, får uppåtkraft för snabbt!
             Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+
 
             isJumping = false;
             isGrounded = false;
@@ -295,6 +300,11 @@ public class Player : MonoBehaviour
             //Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
         
+    }
+    //anim event jump
+    public void ascend()
+    {
+        Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
     }
     //anim event jump
     public void descend()
