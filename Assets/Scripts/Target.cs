@@ -9,14 +9,16 @@ using static UnityEngine.GraphicsBuffer;
 public class Target : MonoBehaviour
 {
     public Transform target;
+
     //SMOOTH DAMP
     //time to follow target
     public float smoothTime = 5f;
-    //public Vector3 offset;
+    public Vector3 offset;
     //zeros out velocity
     Vector3 velocity = Vector3.zero;
+
     //LERP
-    public int camSpeed = 2;
+    public float camSpeed;
 
 
     /*
@@ -27,8 +29,10 @@ public class Target : MonoBehaviour
     void Start()
     {
         //starta neutralt
+    
+        //new Vector3(target.position.x, 0, -10f);
         target = transform;
-            //new Vector3(target.position.x, 0, -10f);
+            
     }
 
     //LateUpdate is called after all Update functions have been called
@@ -47,29 +51,36 @@ public class Target : MonoBehaviour
         if (target == null)
         {
             target = transform;
-            // off center när den återgår
             Debug.Log("no cam target");
         }
-        else
+        else if (target != null)
         {
             //följ target
-            /*   
+            
+            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, -10f), camSpeed * Time.deltaTime);
+            Debug.Log("Lerp2target");
+            
+            /*
             transform.position = Vector3.SmoothDamp(transform.position,
             new Vector3(target.position.x, 0, -10f), ref velocity, smoothTime);
             */
-            transform.position = Vector2.Lerp(transform.position, new Vector3(target.position.x, 0, -10f), camSpeed * Time.deltaTime);
-            Debug.Log("Lerp target"+target);
-
 
         }
 
     }
 
-public void LockOn(Transform currentTarget)
-{
-//matas av DeathTracker i Manager
-//ska röra på sig först när target närmar sig kanten
-target = currentTarget;
-}
+    public void LockOn(Transform currentTarget)
+    {
+        //matas av DeathTracker i Manager
+        //ska röra på sig först när target närmar sig kanten
+        target = currentTarget;
+
+        //funkar icke
+        if (currentTarget.position.x < -7 || currentTarget.position.x > 7)
+            {
+                target = currentTarget;
+            }
+
+    }
 
 }

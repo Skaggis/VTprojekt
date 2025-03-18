@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     private GameObject sword;
     public bool GroundInSight;
     private float halfPlayerHeight;
-
+    public bool P1Win = false;
     public Vector2 colliderDimensions;
     // Start is called before the first frame update
     void Start()
@@ -60,7 +60,8 @@ public class Player : MonoBehaviour
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
 
-        Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+        //Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+        Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
     void Update()
     {
@@ -154,14 +155,15 @@ public class Player : MonoBehaviour
         if (currentYvalue > previousYvalue)
         {
             GroundInSight = false;
-            animator.SetBool("descend", false);
+            //animator.SetBool("descend", false);
             //Debug.Log("Rör sig uppåt");
         }
 
         //stämmer påväg upp en bit?
+        //raycasta enbart när player rör sig neråt
         else if (currentYvalue < previousYvalue)
         {
-            Debug.Log("Rör sig neråt");
+            //Debug.Log("Rör sig neråt");
             RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
             //Vector2 rayStart = transform.position + Vector3.down * halfPlayerHeight;
             Vector2 rayEnd = transform.position + Vector3.down * 10;
@@ -169,7 +171,6 @@ public class Player : MonoBehaviour
             Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
 
             //för varje träff cast:en gör
-            //raycasta enbart när player rör sig neråt
             foreach (RaycastHit2D hit in hits)
             {
                 //om tagg = ground, gult streck
@@ -184,35 +185,29 @@ public class Player : MonoBehaviour
                         GroundInSight = true;
                         //nu får descendfunktionen köras, den kallas av anim event i inAir
                         Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
-
                     }
                     
                     else
                     {
                         GroundInSight = false;
-                        animator.SetBool("descend", false);
+                        //animator.SetBool("descend", false);
                         //Debug.Log("else\ndist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
                     }
                 }
             }
         }
-        //uppdatera Ytranslate-värdet för att kunna jämföra med föregående frames 
+        //uppdatera Ytranslate-värdet för att kunna jämföra med föregående frame
         previousYvalue = currentYvalue;
 
         //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
             //Rb2D.AddForce(transform.right * movementSpeed * input1X);
-            Rb2D.velocity = transform.right * movementSpeed * input1X;
+            //Rb2D.velocity = transform.right * movementSpeed * input1X;
+            Rb2D.velocity = new Vector2(movementSpeed * input1X, Rb2D.velocity.y);
+
             animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
 
-            /*
-            input1X ska påverka movementspeed?
-            under 0.01 -> idle
-            över 0.01 -> walk
-            över o.25 walk -> run
-            över .5 run -> sprint
-             */
             if (input1X < 0)
             {
                 transform.localScale = new Vector3(-5, 5, 5);
@@ -229,7 +224,9 @@ public class Player : MonoBehaviour
         if (isPlayer1 == false)
         {
             //Rb2D.AddForce(transform.right * movementSpeed * input2X);
-            Rb2D.velocity = transform.right * movementSpeed * input2X;
+            //Rb2D.velocity = transform.right * movementSpeed * input2X;
+            Rb2D.velocity = new Vector2(movementSpeed * input2X, Rb2D.velocity.y);
+
             animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
 
             if (input2X == 0)
@@ -250,20 +247,29 @@ public class Player : MonoBehaviour
 
         }
         //kollar om P1 + hopp
-        if (isJumping == true)
+        if (isPlayer1 == true && isJumping == true && P1Win == false)
         {
             animator.SetTrigger("jump");
             StartCoroutine(DelayedJump());
             //får fart uppåt 20 frames efter SetTrigger
             //la till en corutine för detta, den ligger överst
-
             isJumping = false;
             isGrounded = false;
 
+        }
+        else if (isPlayer1 == true && isJumping == true && P1Win == true)
+        {
+            animator.SetTrigger("volt");
+            StartCoroutine(DelayedJump());
+            //får fart uppåt 20 frames efter SetTrigger
+            //la till en corutine för detta, den ligger överst
+            isJumping = false;
+            isGrounded = false;
+            P1Win = false;
 
         }
         //kollar om P2 + hopp ONÖDIG?
-        
+
         if (isPlayer1 == false && isJumping == true)
         {
 
@@ -281,7 +287,10 @@ public class Player : MonoBehaviour
     {
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
-            Debug.Log("P1 WIN");
+            P1Win = true;
+            Debug.Log("P1 WIN true");
+            //volt ist för hopp
+
 
         }
         if (isPlayer1 == false && other.tag == "Goal_P2")
@@ -334,7 +343,8 @@ public class Player : MonoBehaviour
         if (GroundInSight == true)
         {
             //Debug.Log("!!!!!!!!!!!!!!!!!descending");
-            //triggas två ggr :'(
+            //triggas fel :'(
+            //P1 stannar inAir när jumpspeed är 5 eller mer, inte P2 
             animator.SetTrigger("descend");
 
         }

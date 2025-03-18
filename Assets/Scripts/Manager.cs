@@ -16,6 +16,8 @@ public class Manager : MonoBehaviour
     //public GameObject Player2;
     private GameObject inst1;
     private GameObject inst2;
+
+
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
     public Transform spawnP1;
@@ -26,7 +28,7 @@ public class Manager : MonoBehaviour
     {
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;
-        //cam = GetComponent<Camera>();
+
 
     }
 
@@ -123,17 +125,12 @@ public class Manager : MonoBehaviour
                     spawnP2minusZ = spawnP2.transform.position;
                     inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
-                    inst2.tag = "Player2";
-                    
+                    inst2.tag = "Player2";   
                 }
-
 
                 yield return null;
             }
-            
-
         }
-       
     }
 
     public void DeathTracker(GameObject objDestroy)
@@ -143,31 +140,22 @@ public class Manager : MonoBehaviour
         //om bara P1 finns
         if (inst2 == objDestroy)
         {
+            //toggla sprite "RUN ->" 
             cam.GetComponent<Target>().LockOn(inst1.transform);
             Debug.Log("p1 target");
 
             //toggla sprite "RUN ->" 
-
-            //börjar följa först när spelaren närmar sig kanten av viewport
-            //funkar inte
-            /*
-            if (inst1.transform.position.x == 7)
-            {
-                cam.GetComponent<Target>().LockOn(inst1.transform);
-            }
-            */
 
         }
         //om bara P2 finns
         if (inst1 == objDestroy)
         {
             //toggla sprite "RUN ->" 
-
             cam.GetComponent<Target>().LockOn(inst2.transform);
             Debug.Log("p2 target");
         }
 
-        Debug.Log("destroyed" + objDestroy.tag);
+        //Debug.Log("destroyed" + objDestroy.tag);
         Destroy(objDestroy);
 
 
