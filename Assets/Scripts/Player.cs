@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
         {
             input1X = Input.GetAxis("Horizontal_Player1");
             input1Y = Input.GetAxis("Vertical_Player1");
-            Debug.Log("input1X: "+input1X);
+            //Debug.Log("input1X: "+input1X);
 
             //fist attack WASD
             if (Input.GetKeyDown(KeyCode.H))
@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
         {
             input2X = Input.GetAxis("Horizontal_Player2");
             input2Y = Input.GetAxis("Vertical_Player2");
-            Debug.Log("input2X: " + input2X);
+            //Debug.Log("input2X: " + input2X);
 
             //fist attack WASD
             if (Input.GetKeyDown(KeyCode.G))
@@ -145,7 +145,7 @@ public class Player : MonoBehaviour
     float previousYvalue;
 
     // Update is called once per frame
-    //Fixed Update = physics update
+    //Fixed Update = physics update 50hz
     void FixedUpdate()
     {
         //raycast om velocityY är mindre än föregående frame
@@ -155,7 +155,7 @@ public class Player : MonoBehaviour
         {
             GroundInSight = false;
             animator.SetBool("descend", false);
-            Debug.Log("Rör sig uppåt");
+            //Debug.Log("Rör sig uppåt");
         }
 
         //stämmer påväg upp en bit?
@@ -202,9 +202,9 @@ public class Player : MonoBehaviour
         //kollar vem som är P1 för att få rätt kontroller
         if (isPlayer1 == true)
         {
-            animator.SetFloat("walking", Mathf.Abs(input1X));
-            Rb2D.AddForce(transform.right * movementSpeed * input1X);
-            //Rb2D.MovePosition(Rb2D.position + Vector2.right * input1X * movementSpeed * Time.deltaTime);
+            //Rb2D.AddForce(transform.right * movementSpeed * input1X);
+            Rb2D.velocity = transform.right * movementSpeed * input1X;
+            animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
 
             /*
             input1X ska påverka movementspeed?
@@ -213,16 +213,13 @@ public class Player : MonoBehaviour
             över o.25 walk -> run
             över .5 run -> sprint
              */
-
             if (input1X < 0)
             {
-                //spriteRenderer.flipX = true;
                 transform.localScale = new Vector3(-5, 5, 5);
 
             }
             if (input1X > 0)
             {
-                //spriteRenderer.flipX = false;
                 transform.localScale = new Vector3(5, 5, 5);
 
             }
@@ -231,8 +228,14 @@ public class Player : MonoBehaviour
         //ger andra spelaren P2-kontrolelr
         if (isPlayer1 == false)
         {
-            animator.SetFloat("walking", Mathf.Abs(input2X));
-            Rb2D.AddForce(transform.right * movementSpeed * input2X);
+            //Rb2D.AddForce(transform.right * movementSpeed * input2X);
+            Rb2D.velocity = transform.right * movementSpeed * input2X;
+            animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
+
+            if (input2X == 0)
+            {
+                Rb2D.velocity = Vector2.zero;
+            }
 
             if (input2X > 0)
             {
@@ -247,7 +250,7 @@ public class Player : MonoBehaviour
 
         }
         //kollar om P1 + hopp
-        if (isPlayer1 == true && isJumping == true)
+        if (isJumping == true)
         {
             animator.SetTrigger("jump");
             StartCoroutine(DelayedJump());
@@ -259,12 +262,11 @@ public class Player : MonoBehaviour
 
 
         }
-        //kollar om P2 + hopp
+        //kollar om P2 + hopp ONÖDIG?
+        
         if (isPlayer1 == false && isJumping == true)
         {
-            //upward force Rigidbody
-            //böjer knäna i luften, får uppåtkraft för snabbt!
-            //Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+
             animator.SetTrigger("jump");
             StartCoroutine(DelayedJump());
 
@@ -272,7 +274,7 @@ public class Player : MonoBehaviour
             isGrounded = false;
 
         }
-
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -294,9 +296,7 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
-            //animator.SetTrigger("descend");
-            //raycast ist?
-            Debug.Log("Grounded");
+            //Debug.Log("Grounded");
         }
 
     }
@@ -305,7 +305,7 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = false;
-            Debug.Log("NOT grounded");
+            //Debug.Log("NOT grounded");
         }
     }
 
@@ -333,8 +333,9 @@ public class Player : MonoBehaviour
         //delay:a även descend med ienumerator/x frames?
         if (GroundInSight == true)
         {
-            Debug.Log("!!!!!!!!!!!!!!!!!descending");
-            animator.SetBool("descend", true);
+            //Debug.Log("!!!!!!!!!!!!!!!!!descending");
+            //triggas två ggr :'(
+            animator.SetTrigger("descend");
 
         }
 

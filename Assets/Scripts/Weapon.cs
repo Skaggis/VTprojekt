@@ -29,13 +29,14 @@ public class Weapon : MonoBehaviour
         {
             //P2 dödar båda om båda har fists
             //P1 dödar P2
-            other.GetComponent<Player>().damageTaken(1);
-            
+           // other.GetComponent<Player>().damageTaken(1);
+            other.GetComponent<Animator>().SetTrigger("dead");
+
             //se till att de inte puttar varandra
-            
+
             //other.GetComponent<RigidBody2D>().velocity = Vector2.zero;
             //other.GetComponent<RigidBody2D>().isKinematic = true;
-            
+
 
 
         }
