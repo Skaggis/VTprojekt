@@ -32,10 +32,10 @@ public class Weapon : MonoBehaviour
             other.GetComponent<Player>().damageTaken(1);
             
             //se till att de inte puttar varandra
-            /*
-            other.GetComponent<RigidBody2D>().velocity = Vector2.zero;
-            other.GetComponent<RigidBody2D>().isKinematic = true;
-            */
+            
+            //other.GetComponent<RigidBody2D>().velocity = Vector2.zero;
+            //other.GetComponent<RigidBody2D>().isKinematic = true;
+            
 
 
         }
