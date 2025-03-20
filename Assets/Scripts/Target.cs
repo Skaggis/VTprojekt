@@ -73,6 +73,8 @@ public class Target : MonoBehaviour
     {
         //matas av DeathTracker i Manager
         //ska röra på sig först när target närmar sig kanten
+        //får någon gå utanför bild? bara target låst i bild?
+
         target = currentTarget;
 
         //funkar icke

@@ -345,17 +345,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Manager: {fileID: 0}
   Ground: {fileID: 0}
+  jumpSpeed: 5
   playerHP: 1
   movementSpeed: 20
-  jumpSpeed: 5
-  isPlayer1: 0
   Rb2D: {fileID: 0}
   Bc2D: {fileID: 0}
+  colliderDimensions: {x: 0, y: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  isPlayer1: 0
   GroundInSight: 0
-  P1Win: 0
-  colliderDimensions: {x: 0, y: 0}
+  goal: 0
 --- !u!50 &-7579112883605389097
 Rigidbody2D:
   serializedVersion: 4
@@ -371,7 +371,7 @@ Rigidbody2D:
   m_Mass: 0.5
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 20
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

@@ -80,9 +80,10 @@ public class Manager : MonoBehaviour
             inst1.GetComponent<Player>().isPlayer1 = true;
             inst1.tag = "Player1";
            
-
+            //när p2 spawnar igen förvinner bool p1true på p1
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+            inst2.GetComponent<Player>().isPlayer1 = false;
             inst2.tag = "Player2";
           
 
@@ -100,6 +101,7 @@ public class Manager : MonoBehaviour
                     inst1.tag = "Player1";
                     initialSpawnP2minusZ = initialSpawnP2.transform.position;
                     inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
+                    inst2.GetComponent<Player>().isPlayer1 = false;
                     inst2.tag = "Player2";
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                 }
@@ -125,6 +127,7 @@ public class Manager : MonoBehaviour
                     spawnP2minusZ = spawnP2.transform.position;
                     inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+                    inst2.GetComponent<Player>().isPlayer1 = false;
                     inst2.tag = "Player2";   
                 }
 

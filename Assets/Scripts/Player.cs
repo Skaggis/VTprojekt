@@ -9,27 +9,29 @@ public class Player : MonoBehaviour
 {
     public GameObject Manager;
     public GameObject Ground;
-    public int playerHP = 3;
-    public int movementSpeed;
-    public float jumpSpeed;
-    public bool isPlayer1 = false;
-    public Rigidbody2D Rb2D;
-    public BoxCollider2D Bc2D;
-    public Animator animator;
-    float input1X;
-    float input1Y;
-    float input2X;
-    float input2Y;
-    bool isJumping = false;
-    bool isGrounded;
-    public SpriteRenderer spriteRenderer;
     private GameObject fist;
     private GameObject foot;
     private GameObject sword;
-    public bool GroundInSight;
+
+    private float myInputX;
+    private float myInputY;
     private float halfPlayerHeight;
-    public bool P1Win = false;
+    public float jumpSpeed;
+    public int playerHP = 3;
+    public int movementSpeed;
+    
+    public Rigidbody2D Rb2D;
+    public BoxCollider2D Bc2D;
     public Vector2 colliderDimensions;
+    public Animator animator;
+    public SpriteRenderer spriteRenderer;
+
+    public bool isPlayer1;
+    public bool GroundInSight;
+    public bool goal = false;
+    private bool isJumping = false;
+    private bool isGrounded;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,9 +39,10 @@ public class Player : MonoBehaviour
         Ground = GameObject.FindWithTag("Ground");
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         Bc2D = gameObject.GetComponent<BoxCollider2D>();
-
         animator = gameObject.GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
+
         sword = this.gameObject.transform.GetChild(0).gameObject;
         sword.SetActive(false);
         fist = this.gameObject.transform.GetChild(1).gameObject;
@@ -47,9 +50,7 @@ public class Player : MonoBehaviour
         foot = this.gameObject.transform.GetChild(2).gameObject;
         foot.SetActive(false);
 
-        halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
-        //colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.x, GetComponent<BoxCollider2D>().size.y);
-
+        
 
     }
     private IEnumerator DelayedJump()
@@ -60,93 +61,68 @@ public class Player : MonoBehaviour
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
 
-        //Rb2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Impulse);
+        //kraft uppåt för jump/volt
         Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
+
+    // Update is called once per frame
     void Update()
     {
-
+        //INPUTS
         if (isPlayer1 == true)
         {
-            input1X = Input.GetAxis("Horizontal_Player1");
-            input1Y = Input.GetAxis("Vertical_Player1");
-            //Debug.Log("input1X: "+input1X);
-
-            //fist attack WASD
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                animator.SetTrigger("hit");
-
-            }
-            //kick attack WASD
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                animator.SetTrigger("kick");
-
-            }
-            //fist attack joystick
-            if (Input.GetKeyDown(KeyCode.Joystick1Button2))
-            {
-                animator.SetTrigger("hit");
-                //funktion setactive på childobject
-                //via animationEvent i "hit"
-
-            }
-            //hopp WASD
-            if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
-            {
-                isJumping = true;
-
-            }
-            //hopp joystick
-            if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isJumping == false && isGrounded == true)
-            {
-                isJumping = true;
-            }
-            //pil uppåt kastar when hit pressed?
-            //pil neråt crouchar, eller plockar upp svärd
+            myInputX = Input.GetAxis("Horizontal_Player1");
+            myInputY = Input.GetAxis("Vertical_Player1");
+            P1KeyBinds();
         }
-       
-        else
+        else if (isPlayer1 == false)
         {
-            input2X = Input.GetAxis("Horizontal_Player2");
-            input2Y = Input.GetAxis("Vertical_Player2");
-            //Debug.Log("input2X: " + input2X);
+            myInputX = Input.GetAxis("Horizontal_Player2");
+            myInputY = Input.GetAxis("Vertical_Player2");
+            P2KeyBinds();
+        }
 
-            //fist attack WASD
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                animator.SetTrigger("hit");
-            }
-            //kick attack WASD
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                animator.SetTrigger("kick");
+        //RÖRELSE
+        Rb2D.velocity = new Vector2(movementSpeed * myInputX, Rb2D.velocity.y);
 
-            }
-            //fist attack joystick
-            if (Input.GetKeyDown(KeyCode.Joystick2Button2))
-            {
-                animator.SetTrigger("hit");
+        animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
 
-            }
-            //hopp WASD
-            if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
-            {
-                isJumping = true;
-            }
-            //hopp joystick
-            if (Input.GetKeyDown(KeyCode.Joystick2Button1) && isJumping == false && isGrounded == true)
-            {
-                isJumping = true;
-            }
+        if (myInputX < 0)
+        {
+            transform.localScale = new Vector3(-5, 5, 5);
+
+        }
+        if (myInputX > 0)
+        {
+            transform.localScale = new Vector3(5, 5, 5);
+
+        }
+        //HOPP
+        //får fart uppåt 20 frames efter SetTrigger
+        if (isJumping == true && goal == false)
+        {
+            animator.SetTrigger("jump");
+            StartCoroutine(DelayedJump());
+            isJumping = false;
+            isGrounded = false;
+
+        }
+        //VOLT
+        else if (isJumping == true && goal == true)
+        {
+            animator.SetTrigger("volt");
+            StartCoroutine(DelayedJump());
+            isJumping = false;
+            isGrounded = false;
+            goal = false;
+
         }
     }
+
     //uppdatera velocityY är mindre, föregående frame
     float previousYvalue;
 
-    // Update is called once per frame
-    //Fixed Update = physics update 50hz
+    //Fixed Update = physics update 50hz, fixed timestep = 0.02
     void FixedUpdate()
     {
         //raycast om velocityY är mindre än föregående frame
@@ -155,19 +131,15 @@ public class Player : MonoBehaviour
         if (currentYvalue > previousYvalue)
         {
             GroundInSight = false;
-            //animator.SetBool("descend", false);
-            //Debug.Log("Rör sig uppåt");
+            animator.SetBool("descend", false);
         }
 
-        //stämmer påväg upp en bit?
         //raycasta enbart när player rör sig neråt
         else if (currentYvalue < previousYvalue)
         {
-            //Debug.Log("Rör sig neråt");
             RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity);
-            //Vector2 rayStart = transform.position + Vector3.down * halfPlayerHeight;
             Vector2 rayEnd = transform.position + Vector3.down * 10;
-
+            animator.SetBool("descend", false);
             Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
 
             //för varje träff cast:en gör
@@ -178,19 +150,23 @@ public class Player : MonoBehaviour
                 {
                     Transform target = hit.transform;
                     float distanceToTarget = Vector2.Distance(transform.position, hit.point);
-
+                    Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
                     //halfsize 1.6
                     if (distanceToTarget <= halfPlayerHeight+.5)
                     {
+                      
                         GroundInSight = true;
-                        //nu får descendfunktionen köras, den kallas av anim event i inAir
-                        Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+                        animator.SetBool("descend", true);
+                        //tidigare när GroundInSight = true fick funktion köras, kallades i anim event i inAir
+                        //Debug.Log("dist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
+                        
+                        Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.green);
                     }
                     
                     else
                     {
                         GroundInSight = false;
-                        //animator.SetBool("descend", false);
+                        animator.SetBool("descend", false);
                         //Debug.Log("else\ndist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
                     }
                 }
@@ -199,87 +175,7 @@ public class Player : MonoBehaviour
         //uppdatera Ytranslate-värdet för att kunna jämföra med föregående frame
         previousYvalue = currentYvalue;
 
-        //kollar vem som är P1 för att få rätt kontroller
-        if (isPlayer1 == true)
-        {
-            //Rb2D.AddForce(transform.right * movementSpeed * input1X);
-            //Rb2D.velocity = transform.right * movementSpeed * input1X;
-            Rb2D.velocity = new Vector2(movementSpeed * input1X, Rb2D.velocity.y);
-
-            animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
-
-            if (input1X < 0)
-            {
-                transform.localScale = new Vector3(-5, 5, 5);
-
-            }
-            if (input1X > 0)
-            {
-                transform.localScale = new Vector3(5, 5, 5);
-
-            }
-        }
-
-        //ger andra spelaren P2-kontrolelr
-        if (isPlayer1 == false)
-        {
-            //Rb2D.AddForce(transform.right * movementSpeed * input2X);
-            //Rb2D.velocity = transform.right * movementSpeed * input2X;
-            Rb2D.velocity = new Vector2(movementSpeed * input2X, Rb2D.velocity.y);
-
-            animator.SetFloat("walking", Mathf.Abs(Rb2D.velocity.x));
-
-            if (input2X == 0)
-            {
-                Rb2D.velocity = Vector2.zero;
-            }
-
-            if (input2X > 0)
-            {
-                transform.localScale = new Vector3(5, 5, 5);
-
-            }
-            if (input2X < 0)
-            {
-                transform.localScale = new Vector3(-5, 5, 5);
-
-            }
-
-        }
-        //kollar om P1 + hopp
-        if (isPlayer1 == true && isJumping == true && P1Win == false)
-        {
-            animator.SetTrigger("jump");
-            StartCoroutine(DelayedJump());
-            //får fart uppåt 20 frames efter SetTrigger
-            //la till en corutine för detta, den ligger överst
-            isJumping = false;
-            isGrounded = false;
-
-        }
-        else if (isPlayer1 == true && isJumping == true && P1Win == true)
-        {
-            animator.SetTrigger("volt");
-            StartCoroutine(DelayedJump());
-            //får fart uppåt 20 frames efter SetTrigger
-            //la till en corutine för detta, den ligger överst
-            isJumping = false;
-            isGrounded = false;
-            P1Win = false;
-
-        }
-        //kollar om P2 + hopp ONÖDIG?
-
-        if (isPlayer1 == false && isJumping == true)
-        {
-
-            animator.SetTrigger("jump");
-            StartCoroutine(DelayedJump());
-
-            isJumping = false;
-            isGrounded = false;
-
-        }
+        
         
     }
 
@@ -287,15 +183,16 @@ public class Player : MonoBehaviour
     {
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
-            P1Win = true;
-            Debug.Log("P1 WIN true");
             //volt ist för hopp
-
-
+            goal = true;
+            Debug.Log("P1 goal T");
+            
         }
         if (isPlayer1 == false && other.tag == "Goal_P2")
         {
-            Debug.Log("P2 WIN");
+            //volt ist för hopp
+            goal = true;
+            Debug.Log("P2 goal T");
 
         }
     }
@@ -318,10 +215,78 @@ public class Player : MonoBehaviour
         }
     }
 
+    void P1KeyBinds()
+    {
+        
+        //fist attack WASD
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            animator.SetTrigger("hit");
+
+        }
+        //kick attack WASD
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            animator.SetTrigger("kick");
+
+        }
+        //fist attack joystick
+        if (Input.GetKeyDown(KeyCode.Joystick1Button2))
+        {
+            animator.SetTrigger("hit");
+            //funktion setactive på childobject
+            //via animationEvent i "hit"
+
+        }
+        //hopp WASD
+        if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
+        {
+            isJumping = true;
+
+        }
+        //hopp joystick
+        if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isJumping == false && isGrounded == true)
+        {
+            isJumping = true;
+        }
+        //pil uppåt kastar when hit pressed?
+        //pil neråt crouchar, eller plockar upp svärd
+    }
+
+    void P2KeyBinds()
+    {
+        
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            animator.SetTrigger("hit");
+        }
+        //kick attack WASD
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            animator.SetTrigger("kick");
+
+        }
+        //fist attack joystick
+        if (Input.GetKeyDown(KeyCode.Joystick2Button2))
+        {
+            animator.SetTrigger("hit");
+
+        }
+        //hopp WASD
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isJumping == false && isGrounded == true)
+        {
+            isJumping = true;
+        }
+        //hopp joystick
+        if (Input.GetKeyDown(KeyCode.Joystick2Button1) && isJumping == false && isGrounded == true)
+        {
+            isJumping = true;
+        }
+    }
 
     public void damageTaken(int damageTaken)
     {
-      //matas av Weapon-script
+        //matas av Weapon-script
         playerHP = playerHP - damageTaken;
         //Debug.Log("Player was hit\nHP: " + playerHP);
 
@@ -333,34 +298,22 @@ public class Player : MonoBehaviour
             playerHP = 0;
             //Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
-        
-    }
-
-    //anim event JumpInAir
-    public void descend()
-    {
-        //delay:a även descend med ienumerator/x frames?
-        if (GroundInSight == true)
-        {
-            //Debug.Log("!!!!!!!!!!!!!!!!!descending");
-            //triggas fel :'(
-            //P1 stannar inAir när jumpspeed är 5 eller mer, inte P2 
-            animator.SetTrigger("descend");
-
-        }
 
     }
+
+
+
     //anim event dead
     public void killInstance(int killInst)
     {
         if (killInst == 1)
         {
             //collidern ändras inte
-            colliderDimensions = new Vector2 (GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
-            
+            colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
+
             Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
         }
-        
+
     }
     //anim event hit
     public void activeChild(int activeChild)
@@ -388,5 +341,23 @@ public class Player : MonoBehaviour
             foot.SetActive(false);
         }
     }
-}
 
+    //anim event i JumpInAir
+    /*
+    public void descend()
+    {
+        //delay:a även descend med ienumerator/x frames?
+        if (GroundInSight == true)
+        {
+
+            //Debug.Log("!!!!!!!!!!!!!!!!!descending");
+            //triggas fel :'(
+            //P1 stannar inAir när jumpspeed är 5 eller mer, inte P2 
+           
+            //animator.SetBool("descend", true);
+
+        }
+
+    }
+    */
+}
