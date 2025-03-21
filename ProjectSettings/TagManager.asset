@@ -11,6 +11,7 @@ TagManager:
   - Ground
   - Goal_P1
   - Goal_P2
+  - Sword
   layers:
   - Default
   - TransparentFX

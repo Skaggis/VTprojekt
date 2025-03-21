@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
         halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
 
         sword = this.gameObject.transform.GetChild(0).gameObject;
-        sword.SetActive(false);
+        sword.SetActive(true);
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
         foot = this.gameObject.transform.GetChild(2).gameObject;
@@ -174,9 +174,7 @@ public class Player : MonoBehaviour
         }
         //uppdatera Ytranslate-värdet för att kunna jämföra med föregående frame
         previousYvalue = currentYvalue;
-
-        
-        
+ 
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -217,7 +215,19 @@ public class Player : MonoBehaviour
 
     void P1KeyBinds()
     {
-        
+        //sword hi WASD
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            animator.SetTrigger("swordHi");
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            animator.SetTrigger("swordMid");
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            animator.SetTrigger("swordLo");
+        }
         //fist attack WASD
         if (Input.GetKeyDown(KeyCode.H))
         {
