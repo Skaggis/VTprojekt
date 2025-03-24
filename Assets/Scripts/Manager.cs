@@ -12,8 +12,7 @@ public class Manager : MonoBehaviour
 {
     public GameObject cam;
     public GameObject Player;
-    //public GameObject Player1;
-    //public GameObject Player2;
+    public GameObject Sword;
     private GameObject inst1;
     private GameObject inst2;
 
@@ -79,7 +78,15 @@ public class Manager : MonoBehaviour
             inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
             inst1.GetComponent<Player>().isPlayer1 = true;
             inst1.tag = "Player1";
-           
+            //testar spawna svärd på equip's pos
+            GameObject equip = inst1.transform.Find("equip").gameObject;
+            GameObject sword = Instantiate(Sword, equip.transform.position, Quaternion.identity);
+            //parent:a och nollställ pos
+            sword.transform.SetParent(equip.transform);
+            sword.transform.localPosition = Vector3.zero;
+            sword.transform.localRotation = Quaternion.identity;
+  
+
             //när p2 spawnar igen förvinner bool p1true på p1
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
