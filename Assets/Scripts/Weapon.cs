@@ -39,6 +39,7 @@ public class Weapon : MonoBehaviour
         if (other.gameObject.tag != transform.parent.parent.tag) //&& jag/denna inst har fart
         {
            // other.GetComponent<Player>().damageTaken(1);
+           //klagar när man collide:ar med Goal t.ex.
             other.gameObject.GetComponent<Animator>().SetTrigger("dead");
 
             /*
