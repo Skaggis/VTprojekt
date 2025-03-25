@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 {
     public GameObject Manager;
     public GameObject Ground;
+    public Target cam;
     private GameObject fist;
     private GameObject foot;
     private GameObject sword;
@@ -17,7 +18,7 @@ public class Player : MonoBehaviour
     private float myInputY;
     private float halfPlayerHeight;
     public float jumpSpeed;
-    public int playerHP = 3;
+    public int playerHP = 1;
     public int movementSpeed;
     
     public Rigidbody2D Rb2D;
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     {
         Manager = GameObject.FindWithTag("Manager");
         Ground = GameObject.FindWithTag("Ground");
+        cam = GameObject.Find("Main Camera").GetComponent<Target>();
         Rb2D = gameObject.GetComponent<Rigidbody2D>();
         Bc2D = gameObject.GetComponent<BoxCollider2D>();
         animator = gameObject.GetComponent<Animator>();
@@ -105,6 +107,7 @@ public class Player : MonoBehaviour
             StartCoroutine(DelayedJump());
             isJumping = false;
             isGrounded = false;
+            cam.followY = false;
 
         }
         //VOLT
@@ -115,6 +118,8 @@ public class Player : MonoBehaviour
             isJumping = false;
             isGrounded = false;
             goal = false;
+            cam.followY = false;
+
 
         }
     }
@@ -209,6 +214,7 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = false;
+            
             //Debug.Log("NOT grounded");
         }
     }
@@ -297,38 +303,32 @@ public class Player : MonoBehaviour
     public void damageTaken(int damageTaken)
     {
         //matas av Weapon-script
+        playerHP = playerHP - damageTaken;
 
         if (playerHP <= 0)
         {
+            //dead anim har event för Die-func
             animator.SetTrigger("dead");
-            playerHP = 0;
-            Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
+            /* //BORTTAGET anim event dead
+            //collidern ändras inte, vill kunna hoppa över kroppen
+            colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
+            */
+
         }
-        else if (playerHP > 0)
+        if (playerHP > 0)
         {
             animator.SetTrigger("hurt");
-            playerHP = playerHP - damageTaken;
             //Debug.Log("Player was hit\nHP: " + playerHP);
         }
 
     }
-
-
-
-    /* //BORTTAGET anim event dead
-    public void killInstance(int killInst)
+    public void Die()
     {
-        if (killInst == 1)
-        {
-            //collidern ändras inte
-            colliderDimensions = new Vector2(GetComponent<BoxCollider2D>().size.y, GetComponent<BoxCollider2D>().size.x);
-
-            Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
-        }
+        //Delay:a till efter dead-anim!
+        Destroy(gameObject);
+        Manager.GetComponent<Manager>().DeathTracker(gameObject);
 
     }
-    */
-
     //anim event hit
     public void activeChild(int activeChild)
     {

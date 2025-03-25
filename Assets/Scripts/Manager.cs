@@ -12,7 +12,7 @@ public class Manager : MonoBehaviour
 {
     public GameObject cam;
     public GameObject Player;
-    GameObject equip;
+    public GameObject equip;
     public GameObject Sword;
     private GameObject inst1;
     private GameObject inst2;
@@ -172,11 +172,6 @@ public class Manager : MonoBehaviour
             cam.GetComponent<Target>().LockOn(inst2.transform);
             Debug.Log("p2 target");
         }
-
-        //Debug.Log("destroyed" + objDestroy.tag);
-        //Delay:a till efter dead-anim!
-        Destroy(objDestroy);
-
 
     }
 }

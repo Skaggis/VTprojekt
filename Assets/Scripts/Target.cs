@@ -9,11 +9,12 @@ using static UnityEngine.GraphicsBuffer;
 public class Target : MonoBehaviour
 {
     public Transform target;
-
+   
     //SMOOTH DAMP
     //time to follow target
     public float smoothTime = 5f;
     public Vector3 offset;
+    public bool followY;
     //zeros out velocity
     Vector3 velocity = Vector3.zero;
 
@@ -35,7 +36,7 @@ public class Target : MonoBehaviour
     
         //new Vector3(target.position.x, 0, -10f);
         target = transform;
-            
+        followY = true;
     }
 
     //LateUpdate is called after all Update functions have been called
@@ -56,19 +57,26 @@ public class Target : MonoBehaviour
             target = transform;
             Debug.Log("no cam target");
         }
-        else if (target != null)
+        else if (target != null && followY == false)
         {
             //följ target
-            
-            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, -10f), camSpeed * Time.deltaTime);
+            //Vector3 Interpolated value, equals to a + (b - a) * t
+            //när den har target får den inte ha nollat Y-led, behöver följa spelaren men inte när den hoppar
+            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, -10f), camSpeed * (Time.deltaTime*2));
             Debug.Log("Lerp2target");
             
-            /*
-            transform.position = Vector3.SmoothDamp(transform.position,
-            new Vector3(target.position.x, 0, -10f), ref velocity, smoothTime);
-            */
+
 
         }
+        else if (target != null && followY == true)
+        {
+            //func ist
+            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, target.position.y, -10f), camSpeed * (Time.deltaTime * 2));
+        }
+        /*
+        transform.position = Vector3.SmoothDamp(transform.position,
+        new Vector3(target.position.x, 0, -10f), ref velocity, smoothTime);
+        */
 
     }
 
@@ -79,12 +87,6 @@ public class Target : MonoBehaviour
         //får någon gå utanför bild? bara target låst i bild?
 
         target = currentTarget;
-
-        //funkar icke
-        if (currentTarget.position.x < -7 || currentTarget.position.x > 7)
-            {
-                target = currentTarget;
-            }
 
     }
 

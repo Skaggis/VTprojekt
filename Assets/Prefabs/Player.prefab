@@ -232,7 +232,7 @@ MonoBehaviour:
   Manager: {fileID: 0}
   Ground: {fileID: 0}
   jumpSpeed: 5
-  playerHP: 3
+  playerHP: 1
   movementSpeed: 20
   Rb2D: {fileID: 0}
   Bc2D: {fileID: 0}
