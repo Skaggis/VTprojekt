@@ -28,6 +28,9 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //kameran ska inte kunna röra sig när båda spawnar,
+        //eller: spelarna kan inte röra sig utanför "viewport"
+
         //starta neutralt
     
         //new Vector3(target.position.x, 0, -10f);

@@ -12,6 +12,7 @@ public class Manager : MonoBehaviour
 {
     public GameObject cam;
     public GameObject Player;
+    GameObject equip;
     public GameObject Sword;
     private GameObject inst1;
     private GameObject inst2;
@@ -27,7 +28,7 @@ public class Manager : MonoBehaviour
     {
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;
-
+        equip = GameObject.Find("equip").gameObject;
 
     }
 
@@ -78,13 +79,17 @@ public class Manager : MonoBehaviour
             inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
             inst1.GetComponent<Player>().isPlayer1 = true;
             inst1.tag = "Player1";
+
+
             //testar spawna svärd på equip's pos
             GameObject equip = inst1.transform.Find("equip").gameObject;
             GameObject sword = Instantiate(Sword, equip.transform.position, Quaternion.identity);
             //parent:a och nollställ pos
             sword.transform.SetParent(equip.transform);
             sword.transform.localPosition = Vector3.zero;
+            sword.transform.localScale = new Vector3(0.3f,0.3f,0);
             sword.transform.localRotation = Quaternion.identity;
+            //ärv inte scale!
   
 
             //när p2 spawnar igen förvinner bool p1true på p1
@@ -93,7 +98,8 @@ public class Manager : MonoBehaviour
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
             inst2.GetComponent<Player>().isPlayer1 = false;
             inst2.tag = "Player2";
-          
+
+
 
             initialSpawn = false;
 
@@ -147,6 +153,7 @@ public class Manager : MonoBehaviour
     public void DeathTracker(GameObject objDestroy)
     {
         //kameran byter lock-on
+        
 
         //om bara P1 finns
         if (inst2 == objDestroy)
@@ -167,6 +174,7 @@ public class Manager : MonoBehaviour
         }
 
         //Debug.Log("destroyed" + objDestroy.tag);
+        //Delay:a till efter dead-anim!
         Destroy(objDestroy);
 
 

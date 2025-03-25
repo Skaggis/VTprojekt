@@ -12,6 +12,7 @@ TagManager:
   - Goal_P1
   - Goal_P2
   - Sword
+  - equip
   layers:
   - Default
   - TransparentFX

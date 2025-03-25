@@ -43,8 +43,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
 
-        sword = this.gameObject.transform.GetChild(0).gameObject;
-        sword.SetActive(true);
+        //sword = this.gameObject.transform.GetChild(0).gameObject;
+        //sword.SetActive(true);
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
         foot = this.gameObject.transform.GetChild(2).gameObject;
@@ -297,23 +297,25 @@ public class Player : MonoBehaviour
     public void damageTaken(int damageTaken)
     {
         //matas av Weapon-script
-        playerHP = playerHP - damageTaken;
-        //Debug.Log("Player was hit\nHP: " + playerHP);
-
 
         if (playerHP <= 0)
         {
             animator.SetTrigger("dead");
-            //anim event funktion med raderna nedan
             playerHP = 0;
-            //Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
+            Manager.GetComponent<Manager>().DeathTracker(this.gameObject);
+        }
+        else if (playerHP > 0)
+        {
+            animator.SetTrigger("hurt");
+            playerHP = playerHP - damageTaken;
+            //Debug.Log("Player was hit\nHP: " + playerHP);
         }
 
     }
 
 
 
-    //anim event dead
+    /* //BORTTAGET anim event dead
     public void killInstance(int killInst)
     {
         if (killInst == 1)
@@ -325,6 +327,8 @@ public class Player : MonoBehaviour
         }
 
     }
+    */
+
     //anim event hit
     public void activeChild(int activeChild)
     {
