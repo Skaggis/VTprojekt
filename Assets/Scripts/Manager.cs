@@ -92,8 +92,7 @@ public class Manager : MonoBehaviour
             //ärv inte scale!
   
 
-            //när p2 spawnar igen förvinner bool p1true på p1
-            //ÄR OVAN SANT?
+            //p2 spawnar
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
             inst2.GetComponent<Player>().isPlayer1 = false;
@@ -139,7 +138,7 @@ public class Manager : MonoBehaviour
                     //spawnPoint utanför bild
                     //höger om Viewport
                     spawnP2minusZ = spawnP2.transform.position;
-                    inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);
+                    inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);              
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                     inst2.GetComponent<Player>().isPlayer1 = false;
                     inst2.tag = "Player2";   

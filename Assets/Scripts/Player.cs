@@ -57,12 +57,15 @@ public class Player : MonoBehaviour
     }
     private IEnumerator DelayedJump()
     {
+        cam.followY = false;
+
         int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
         for (int i = 0; i < frameDelay; i++)
         {
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
 
+        Debug.Log("followY F");
         //kraft uppåt för jump/volt
         Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
@@ -107,8 +110,6 @@ public class Player : MonoBehaviour
             StartCoroutine(DelayedJump());
             isJumping = false;
             isGrounded = false;
-            cam.followY = false;
-
         }
         //VOLT
         else if (isJumping == true && goal == true)
@@ -118,8 +119,6 @@ public class Player : MonoBehaviour
             isJumping = false;
             isGrounded = false;
             goal = false;
-            cam.followY = false;
-
 
         }
     }
@@ -162,7 +161,6 @@ public class Player : MonoBehaviour
                       
                         GroundInSight = true;
                         animator.SetBool("descend", true);
-                        //tidigare när GroundInSight = true fick funktion köras, kallades i anim event i inAir
                         //Debug.Log("dist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
                         
                         Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.green);
@@ -205,7 +203,8 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = true;
-            //Debug.Log("Grounded");
+            cam.followY = true;
+            Debug.Log("Grounded");
         }
 
     }
@@ -214,8 +213,8 @@ public class Player : MonoBehaviour
         if (other.transform.tag == "Ground")
         {
             isGrounded = false;
-            
-            //Debug.Log("NOT grounded");
+            cam.followY = false;
+            Debug.Log("NOT grounded");
         }
     }
 

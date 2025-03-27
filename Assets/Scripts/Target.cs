@@ -9,18 +9,13 @@ using static UnityEngine.GraphicsBuffer;
 public class Target : MonoBehaviour
 {
     public Transform target;
-   
-    //SMOOTH DAMP
-    //time to follow target
-    public float smoothTime = 5f;
-    public Vector3 offset;
+    public float offset;
+    
     public bool followY;
-    //zeros out velocity
-    Vector3 velocity = Vector3.zero;
-
     //LERP
     public float camSpeed;
 
+    Vector3 TargetPos = new Vector3(0,0,-10);
 
     /*
     https://stackoverflow.com/questions/35746459/moving-a-camera-from-its-current-position-to-a-specific-position-smoothly-in-un
@@ -29,54 +24,66 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //kameran ska inte kunna röra sig när båda spawnar,
-        //eller: spelarna kan inte röra sig utanför "viewport"
-
         //starta neutralt
     
         //new Vector3(target.position.x, 0, -10f);
         target = transform;
         followY = true;
+        //player Ypos: -2.147894
+       // offset = -2.147894f;
     }
 
-    //LateUpdate is called after all Update functions have been called
-    private void LateUpdate()
-    {
-        //hastighet(mjukhet i rörelse?
-        //transform.position = Vector3.SmoothDamp(transform.position,
-        //new Vector3(target.position.x, 0, -10f), ref velocity, smoothTime);
-       
-    }
     // Update is called once per frame
     void Update()
     {
+        /*
+        //Vector3.Distance(a, b)
+        offset = Vector3.Distance(target.transform.position, transform.position);
+        print("Distance/offset to other: " + offset);
+        //normalized
+        Vector3 distanceVector = transform.position - target.position;
+        Vector3 distanceVectorNormalized = distanceVector.normalized;
+        Vector3 targetPosition = distanceVectorNormalized;
+        transform.position = targetPosition;
+        */
         //om ingen target angetts vid död,
         //återgå till neutral
         if (target == null)
         {
             target = transform;
+            
+        }
+        
+         if (target != transform)
+        {
+            //offsettar ok, kan hoppa utan camrörelse
+            //vill att kameran följer med till andra nivåer!?
+            offset = transform.position.y - target.position.y;
+            TargetPos = new Vector3(target.position.x, target.position.y + offset, -10f);
+            //Debug.Log(TargetPos);
+
+        }
+        /*
+        if (target == transform)
+        {
             Debug.Log("no cam target");
         }
-        else if (target != null && followY == false)
+        */
+        if (target != null && followY == false)
         {
             //följ target
             //Vector3 Interpolated value, equals to a + (b - a) * t
-            //när den har target får den inte ha nollat Y-led, behöver följa spelaren men inte när den hoppar
-            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, -10f), camSpeed * (Time.deltaTime*2));
-            Debug.Log("Lerp2target");
-            
-
+            //när den har target får den följa spelaren, men inte när den hoppar
+            transform.position = Vector3.Lerp(transform.position, TargetPos, camSpeed * (Time.deltaTime * 2));
+            Debug.Log("Lerp2t followY F");
 
         }
         else if (target != null && followY == true)
         {
-            //func ist
-            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, target.position.y, -10f), camSpeed * (Time.deltaTime * 2));
+            //offset:a target.pos.y Ypos när P = target: -2.147894
+            transform.position = Vector3.Lerp(transform.position, TargetPos, camSpeed * (Time.deltaTime * 2));
+            Debug.Log("Lerp2t followY T");
         }
-        /*
-        transform.position = Vector3.SmoothDamp(transform.position,
-        new Vector3(target.position.x, 0, -10f), ref velocity, smoothTime);
-        */
 
     }
 
@@ -85,7 +92,7 @@ public class Target : MonoBehaviour
         //matas av DeathTracker i Manager
         //ska röra på sig först när target närmar sig kanten
         //får någon gå utanför bild? bara target låst i bild?
-
+        //target.position = new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z);
         target = currentTarget;
 
     }
