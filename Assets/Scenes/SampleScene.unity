@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 555807526}
   - component: {fileID: 555807528}
   - component: {fileID: 555807527}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Goal_P1
   m_TagString: Goal_P1
   m_Icon: {fileID: 0}
@@ -949,7 +949,7 @@ GameObject:
   - component: {fileID: 1563278415}
   - component: {fileID: 1563278414}
   - component: {fileID: 1563278413}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground_Test (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -1109,7 +1109,7 @@ GameObject:
   - component: {fileID: 1721362093}
   - component: {fileID: 1721362092}
   - component: {fileID: 1721362091}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground_Test
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -1269,7 +1269,7 @@ GameObject:
   - component: {fileID: 1850765594}
   - component: {fileID: 1850765593}
   - component: {fileID: 1850765596}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -1428,7 +1428,7 @@ GameObject:
   - component: {fileID: 2137366450}
   - component: {fileID: 2137366452}
   - component: {fileID: 2137366451}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Goal_P2
   m_TagString: Goal_P2
   m_Icon: {fileID: 0}

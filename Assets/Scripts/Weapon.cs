@@ -18,6 +18,7 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameObject.SetActive(true);
         //gäller fist, foot OCH sword
         thisBc2D = gameObject.GetComponent<BoxCollider2D>();
         
@@ -26,6 +27,7 @@ public class Weapon : MonoBehaviour
         {
             Debug.Log("iam Sword");//CHECK
             Rb2D = gameObject.GetComponent<Rigidbody2D>();
+            //HMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM!
             Rb2D.velocity = Vector2.zero;
             grannyBc2D = transform.parent.parent.GetComponent<BoxCollider2D>();
             Physics2D.IgnoreCollision(thisBc2D, grannyBc2D, true);
@@ -50,13 +52,19 @@ public class Weapon : MonoBehaviour
     {
 
         //om det är fist eller foot - gör bara skada på other
-        if (gameObject.tag == "Weapon" && other.tag != gameObject.transform.parent.tag) 
+        if (gameObject.tag == "Weapon" && other.tag != gameObject.transform.parent.tag)
         {
             //null ref???
             other.GetComponent<Player>().damageTaken(1);
 
         }
-
+        /*
+        if (other.velocity.y > gameObject.velocity.y)
+        {
+            gameObject.SetActive(false);
+            //ska falla till marken
+        }
+        */
 
     }
     //collision pga sword har rigidbody

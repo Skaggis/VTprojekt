@@ -78,6 +78,7 @@ public class Manager : MonoBehaviour
             
             inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
             inst1.GetComponent<Player>().isPlayer1 = true;
+            //inst1.GetComponent<Player>().Bc2D.enabled = true;
             inst1.tag = "Player1";
 
 
@@ -96,6 +97,7 @@ public class Manager : MonoBehaviour
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
             inst2.GetComponent<Player>().isPlayer1 = false;
+            //inst2.GetComponent<Player>().Bc2D.enabled = true;
             inst2.tag = "Player2";
 
 
@@ -111,10 +113,12 @@ public class Manager : MonoBehaviour
                     initialSpawnP1minusZ = initialSpawnP1.transform.position;
                     inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
                     inst1.GetComponent<Player>().isPlayer1 = true;
+                    //inst1.GetComponent<Player>().Bc2D.enabled = true;
                     inst1.tag = "Player1";
                     initialSpawnP2minusZ = initialSpawnP2.transform.position;
                     inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
                     inst2.GetComponent<Player>().isPlayer1 = false;
+                   // inst2.GetComponent<Player>().Bc2D.enabled = true;
                     inst2.tag = "Player2";
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                 }
@@ -127,6 +131,7 @@ public class Manager : MonoBehaviour
                     spawnP1minusZ = spawnP1.transform.position;
                     inst1 = Instantiate(Player, spawnP1minusZ, Quaternion.identity);
                     inst1.GetComponent<Player>().isPlayer1 = true;
+                   // inst1.GetComponent<Player>().Bc2D.enabled = true;
                     inst1.tag = "Player1";
                     
 
@@ -138,9 +143,10 @@ public class Manager : MonoBehaviour
                     //spawnPoint utanför bild
                     //höger om Viewport
                     spawnP2minusZ = spawnP2.transform.position;
-                    inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);              
+                    inst2 = Instantiate(Player, spawnP2minusZ, Quaternion.identity);
                     inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                     inst2.GetComponent<Player>().isPlayer1 = false;
+                   // inst2.GetComponent<Player>().Bc2D.enabled = true;
                     inst2.tag = "Player2";   
                 }
 

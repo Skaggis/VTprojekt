@@ -10,12 +10,12 @@ public class Target : MonoBehaviour
 {
     public Transform target;
     public float offset;
-    
     public bool followY;
     //LERP
     public float camSpeed;
 
-    Vector3 TargetPos = new Vector3(0,0,-10);
+    Vector3 TargetPos = new Vector3(0, 0, -10);
+    Vector3 JumpPos = new Vector3(0,0,-10);
 
     /*
     https://stackoverflow.com/questions/35746459/moving-a-camera-from-its-current-position-to-a-specific-position-smoothly-in-un
@@ -24,9 +24,8 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //starta neutralt
-    
-        //new Vector3(target.position.x, 0, -10f);
+        //starta neutralt, följer Y för terräng
+   
         target = transform;
         followY = true;
         //player Ypos: -2.147894
@@ -59,7 +58,11 @@ public class Target : MonoBehaviour
             //offsettar ok, kan hoppa utan camrörelse
             //vill att kameran följer med till andra nivåer!?
             offset = transform.position.y - target.position.y;
+            //TargetPos följer targets alla led, men är offset:ad för att va i linje med cams neutrala startpos
+            //följer Y
             TargetPos = new Vector3(target.position.x, target.position.y + offset, -10f);
+            //följer INTE Y
+            JumpPos = new Vector3(target.position.x, transform.position.y, -10f);
             //Debug.Log(TargetPos);
 
         }
@@ -73,8 +76,9 @@ public class Target : MonoBehaviour
         {
             //följ target
             //Vector3 Interpolated value, equals to a + (b - a) * t
-            //när den har target får den följa spelaren, men inte när den hoppar
-            transform.position = Vector3.Lerp(transform.position, TargetPos, camSpeed * (Time.deltaTime * 2));
+            //när den har target får den följa spelaren
+            //notGrounded = followY FALSE
+            transform.position = Vector3.Lerp(transform.position, JumpPos, camSpeed * (Time.deltaTime * 2));
             Debug.Log("Lerp2t followY F");
 
         }
