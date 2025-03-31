@@ -296,7 +296,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   offset: 0
-  followY: 0
   camSpeed: 10
 --- !u!1 &555807525
 GameObject:

@@ -35,17 +35,6 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        Vector3 screenPoint = Camera.main.WorldToViewportPoint(new Vector3(Screen.width, Screen.height, Camera.main.farClipPlane / 2));
-        //Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
-
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log(screenPoint);
-        }
-        */
-
 
         //se till att hela spriten syns
         /*
@@ -80,8 +69,6 @@ public class Manager : MonoBehaviour
             inst1.GetComponent<Player>().isPlayer1 = true;
             //inst1.GetComponent<Player>().Bc2D.enabled = true;
             inst1.tag = "Player1";
-
-
             //testar spawna svärd på equip's pos
             GameObject equip = inst1.transform.Find("equip").gameObject;
             GameObject sword = Instantiate(Sword, equip.transform.position, Quaternion.identity);

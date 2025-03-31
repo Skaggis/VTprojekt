@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D Rb2D;
     public Rigidbody2D swordRb2D;
     public BoxCollider2D Bc2D;
-    public Vector2 colliderDimensions;
+    //public Vector2 colliderDimensions;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
 
@@ -33,7 +34,7 @@ public class Player : MonoBehaviour
     public bool GroundInSight;
     public bool goal = false;
     private bool isJumping = false;
-    private bool isGrounded;
+    public bool isGrounded;
 
     // Start is called before the first frame update
     void Start()
@@ -55,14 +56,9 @@ public class Player : MonoBehaviour
         foot = this.gameObject.transform.GetChild(2).gameObject;
         foot.SetActive(false);
 
-        
-
-        //Bc2D.enabled = true;
-
     }
     private IEnumerator DelayedJump()
     {
-        cam.followY = false;
 
         int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
         for (int i = 0; i < frameDelay; i++)
@@ -70,8 +66,6 @@ public class Player : MonoBehaviour
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
 
-        Debug.Log("followY F");
-        //kraft uppåt för jump/volt
         Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
     private IEnumerator ThrowSword()
@@ -161,9 +155,15 @@ public class Player : MonoBehaviour
             //leta enbart efter Ground
             LayerMask groundLayer = LayerMask.GetMask("Ground");
             RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, Mathf.Infinity, groundLayer);
+
+            //bara för at få se ett rött streck
             Vector2 rayEnd = transform.position + Vector3.down * 20;
-            animator.SetBool("descend", false);
             Debug.DrawRay(transform.position, rayEnd - (Vector2)transform.position, Color.red);
+            animator.SetBool("descend", false);
+
+
+            // Sortera träffarna efter avstånd från spelaren
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
             //för varje träff cast:en gör
             foreach (RaycastHit2D hit in hits)
@@ -171,9 +171,11 @@ public class Player : MonoBehaviour
                 //om tagg = ground, gult streck
                 if (hit.collider.CompareTag("Ground"))
                 {
-                    Transform target = hit.transform;
-                    float distanceToTarget = Vector2.Distance(transform.position, hit.point);
+                    float distanceToTarget = hit.distance;
+                    //Transform target = hit.transform;
+                    //float distanceToTarget = Vector2.Distance(transform.position, hit.point);
                     Debug.DrawRay(transform.position, hit.point - (Vector2)transform.position, Color.yellow);
+
                     //halfsize 1.6
                     if (distanceToTarget <= halfPlayerHeight+.5)
                     {
@@ -189,6 +191,8 @@ public class Player : MonoBehaviour
                         animator.SetBool("descend", false);
                         //Debug.Log("else\ndist" + distanceToTarget + "1 / 2 playerheight: " + halfPlayerHeight);
                     }
+                    // Bryt loopen eftersom vi redan har hittat den närmaste markträffen
+                    break;
                 }
             }
         }
@@ -202,60 +206,35 @@ public class Player : MonoBehaviour
         {
             //volt ist för hopp
             goal = true;
-            Debug.Log("P1 goal T");
+            //Debug.Log("P1 goal T");
         }
         if (isPlayer1 == false && other.tag == "Goal_P2")
         {
             //volt ist för hopp
             goal = true;
-            Debug.Log("P2 goal T");
+            //Debug.Log("P2 goal T");
         }
     }
-    private float lastGroundedY = 0f; // Senaste Y-position vid markkontakt
-    private float lastXpos = 0f;      // Senaste X-position för att upptäcka backar
 
-    private void OnCollisionStay2D(Collision2D other)
+
+    private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
-        {
+        {                                                       
             isGrounded = true;
-            cam.followY = true;
-
-            // Om spelaren rör sig horisontellt och inte bara står stilla
-            bool movingForward = Mathf.Abs(transform.position.x - lastXpos) > 0.1f;
-
-            // Om spelaren landar på en högre höjd (t.ex. en backe)
-            if (transform.position.y > lastGroundedY + 0.1f && movingForward)
-            {
-                cam.followY = true; // Låt kameran följa Y i backe
-            }
-            // Om spelaren landar på en lägre nivå (fall från plattform)
-            else if (transform.position.y < lastGroundedY - 0.5f)
-            {
-                cam.followY = true; // Låt kameran följa neråt
-            }
-            else
-            {
-                cam.followY = false; // Annars lås Y (för att undvika hopp-ryckighet)
-            }
-
-            lastGroundedY = transform.position.y; // Uppdatera senaste landade Y-position
-            lastXpos = transform.position.x; // Uppdatera X för att känna av backar
-
+            //Debug.Log("grounded");
         }
     }
-
+    /*
     void OnCollisionExit2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
         {
-            isGrounded = false;
-            cam.followY = false; // Lås Y när spelaren hoppar
+            //isGrounded = false;
             Debug.Log("NOT grounded");
         }
     }
-
-
+    */
     void P1KeyBinds()
     {
         //sword hi WASD
@@ -302,6 +281,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isJumping == false && isGrounded == true)
         {
             isJumping = true;
+            isGrounded = false;
 
         }
         //hopp joystick
@@ -373,7 +353,7 @@ public class Player : MonoBehaviour
         //körs sista frame:n i Dead anim
         Destroy(gameObject);
         
-        Debug.Log("p1 target");
+       // Debug.Log("p1 target");
 
     }
     //anim event hit
@@ -403,22 +383,4 @@ public class Player : MonoBehaviour
         }
     }
 
-    //anim event i JumpInAir
-    /*
-    public void descend()
-    {
-        //delay:a även descend med ienumerator/x frames?
-        if (GroundInSight == true)
-        {
-
-            //Debug.Log("!!!!!!!!!!!!!!!!!descending");
-            //triggas fel :'(
-            //P1 stannar inAir när jumpspeed är 5 eller mer, inte P2 
-           
-            //animator.SetBool("descend", true);
-
-        }
-
-    }
-    */
 }
