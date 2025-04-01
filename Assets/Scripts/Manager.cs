@@ -24,7 +24,8 @@ public class Manager : MonoBehaviour
     public Transform spawnP2;
 
     // Start is called before the first frame update
-    void Start()
+    //Awake samma som start fast lite före
+    void Awake()
     {
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;

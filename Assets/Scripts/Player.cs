@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private float myInputX;
     private float myInputY;
     private float halfPlayerHeight;
-    public float jumpSpeed;
+    public int jumpSpeed;
     public int playerHP = 3;
     public int movementSpeed;
     
@@ -48,9 +48,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
 
-        sword = this.gameObject.transform.GetChild(0).gameObject;
+        sword = this.gameObject.transform.GetChild(0).GetChild(0).gameObject;
         sword.SetActive(true);
-        swordRb2D = sword.GetComponent<Rigidbody2D>();
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
         foot = this.gameObject.transform.GetChild(2).gameObject;
@@ -70,17 +69,7 @@ public class Player : MonoBehaviour
         Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
     #endregion
-    #region delaySword
-    private IEnumerator ThrowSword()
-    {
-        int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
-        for (int i = 0; i < frameDelay; i++)
-        {
-            yield return new WaitForFixedUpdate(); // Väntar en physics frame
-        }
-        swordRb2D.velocity = new Vector2(movementSpeed, 0);
-    }
-    #endregion
+ 
     // Update is called once per frame
     void Update()
     {
@@ -263,10 +252,8 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             animator.SetTrigger("throw");
-            //borde detta vara anim event?
-            StartCoroutine(ThrowSword());
-            //de-parent?
-            //static body?
+            sword.GetComponent<Weapon>().ThrowSwordNow();
+           
         }
         //fist attack WASD
         if (Input.GetKeyDown(KeyCode.H))
