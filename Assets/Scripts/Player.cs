@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     private float myInputY;
     private float halfPlayerHeight;
     public float jumpSpeed;
-    public int playerHP = 1;
+    public int playerHP = 3;
     public int movementSpeed;
     
     public Rigidbody2D Rb2D;
@@ -57,6 +57,7 @@ public class Player : MonoBehaviour
         foot.SetActive(false);
 
     }
+    #region delay jump
     private IEnumerator DelayedJump()
     {
 
@@ -68,16 +69,18 @@ public class Player : MonoBehaviour
 
         Rb2D.velocity = new Vector2(Rb2D.velocity.x, jumpSpeed);
     }
+    #endregion
+    #region delaySword
     private IEnumerator ThrowSword()
     {
-            int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
-            for (int i = 0; i < frameDelay; i++)
-            {
-                yield return new WaitForFixedUpdate(); // Väntar en physics frame
-            }
-            swordRb2D.velocity = new Vector2(swordRb2D.velocity.x, 0);
+        int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
+        for (int i = 0; i < frameDelay; i++)
+        {
+            yield return new WaitForFixedUpdate(); // Väntar en physics frame
+        }
+        swordRb2D.velocity = new Vector2(movementSpeed, 0);
     }
-
+    #endregion
     // Update is called once per frame
     void Update()
     {
@@ -94,9 +97,9 @@ public class Player : MonoBehaviour
             myInputY = Input.GetAxis("Vertical_Player2");
             P2KeyBinds();
         }
-
+        #region movement
         //RÖRELSE
-        if(Rb2D.bodyType != RigidbodyType2D.Static)
+        if (Rb2D.bodyType != RigidbodyType2D.Static)
         {
             Rb2D.velocity = new Vector2(movementSpeed * myInputX, Rb2D.velocity.y);
         }
@@ -113,6 +116,8 @@ public class Player : MonoBehaviour
             transform.localScale = new Vector3(5, 5, 5);
 
         }
+        #endregion
+        #region jump/volt
         //HOPP
         //får fart uppåt 20 frames efter SetTrigger
         if (isJumping == true && goal == false)
@@ -132,8 +137,9 @@ public class Player : MonoBehaviour
             goal = false;
 
         }
+        #endregion
     }
-
+    #region raycast
     //uppdatera velocityY är mindre, föregående frame
     float previousYvalue;
 
@@ -199,7 +205,8 @@ public class Player : MonoBehaviour
         //uppdatera Ytranslate-värdet för att kunna jämföra med föregående frame
         previousYvalue = currentYvalue;
     }
-
+    #endregion
+    #region goal
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isPlayer1 == true && other.tag == "Goal_P1")
@@ -215,8 +222,8 @@ public class Player : MonoBehaviour
             //Debug.Log("P2 goal T");
         }
     }
-
-
+    #endregion
+    #region isGrounded
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
@@ -235,6 +242,8 @@ public class Player : MonoBehaviour
         }
     }
     */
+    #endregion
+    #region P1binds
     void P1KeyBinds()
     {
         //sword hi WASD
@@ -256,6 +265,8 @@ public class Player : MonoBehaviour
             animator.SetTrigger("throw");
             //borde detta vara anim event?
             StartCoroutine(ThrowSword());
+            //de-parent?
+            //static body?
         }
         //fist attack WASD
         if (Input.GetKeyDown(KeyCode.H))
@@ -292,7 +303,8 @@ public class Player : MonoBehaviour
         //pil uppåt kastar when hit pressed?
         //pil neråt crouchar, eller plockar upp svärd
     }
-
+    #endregion
+    #region P2binds
     void P2KeyBinds()
     {
         
@@ -323,7 +335,8 @@ public class Player : MonoBehaviour
             isJumping = true;
         }
     }
-
+    #endregion //P2binds
+    #region damage
     public void damageTaken(int damageTaken)
     {
         //matas av Weapon-script
@@ -348,6 +361,7 @@ public class Player : MonoBehaviour
         }
 
     }
+    #endregion
     public void Die()
     {
         //körs sista frame:n i Dead anim

@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   Rb2D: {fileID: 0}
+  otherRb2D: {fileID: 0}
   thisBc2D: {fileID: 0}
   grannyBc2D: {fileID: 0}
 --- !u!61 &3682552941201172716
@@ -233,17 +234,17 @@ MonoBehaviour:
   Ground: {fileID: 0}
   cam: {fileID: 0}
   jumpSpeed: 5
-  playerHP: 1
+  playerHP: 3
   movementSpeed: 20
   Rb2D: {fileID: 0}
   swordRb2D: {fileID: 0}
   Bc2D: {fileID: 0}
-  colliderDimensions: {x: 0, y: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
   isPlayer1: 0
   GroundInSight: 0
   goal: 0
+  isGrounded: 0
 --- !u!50 &-7579112883605389097
 Rigidbody2D:
   serializedVersion: 4
@@ -489,6 +490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   Rb2D: {fileID: 0}
+  otherRb2D: {fileID: 0}
   thisBc2D: {fileID: 0}
   grannyBc2D: {fileID: 0}
 --- !u!61 &1165622094800362901
