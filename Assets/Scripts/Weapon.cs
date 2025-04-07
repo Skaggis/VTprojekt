@@ -14,9 +14,10 @@ public class Weapon : MonoBehaviour
 {
     public GameObject Player;
     public GameObject groundCollider;
+    //public GameObject hurtBox;
     public int throwSpeed;
     private Rigidbody2D gCollRb2D;
-   // public Rigidbody2D otherRb2D;
+    //public Rigidbody2D otherRb2D;
     public BoxCollider2D thisBc2D;
     public BoxCollider2D grannyBc2D;
 
@@ -24,18 +25,21 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       //Player = GameObject.Find("Player").GetComponent<Player>();
         gameObject.SetActive(true);
         //gäller fist, foot OCH sword
         thisBc2D = gameObject.GetComponent<BoxCollider2D>();
         //otherRb2D = GameObject.Find("Player").GetComponent<Rigidbody2D>();
-        
+
+        //if "weapon" parent bc2d = senare ignore,
+        //eller layers???
 
         //gäller enbart sword/equippable grandchild
         if (gameObject.tag == "Sword")
         {
             grannyBc2D = gameObject.transform.parent.parent.GetComponent<BoxCollider2D>();
             Physics2D.IgnoreCollision(thisBc2D, grannyBc2D, true);
-
+            Debug.Log(grannyBc2D, thisBc2D);
             //har Rb2D + boxCollider
             groundCollider = this.gameObject.transform.GetChild(0).gameObject;
             groundCollider.SetActive(false);
@@ -57,15 +61,22 @@ public class Weapon : MonoBehaviour
         //om det är fist eller foot - gör bara skada på other
         if (gameObject.tag == "Weapon" && other.tag != gameObject.transform.parent.tag)
         {
-            Debug.Log("Weapon " + other.transform.parent.tag);
+            //null ref!
+            Debug.Log(gameObject + other.transform.parent.tag);
             //other.GetComponent<Player>().damageTaken(1);
             other.GetComponentInParent<Player>().damageTaken(1);
         }
 
-        if (gameObject.tag == "Sword")
+        if (gameObject.tag == "Sword" && other != grannyBc2D)
         {
-            Debug.Log("!"+ other.tag);
+            //hurtbox ej aktiv
+            //Debug.Log("!"+ other.tag);
+            Debug.Log("Sword " + other.tag);
+            //sword player1, p1 dör, p2 tappar svärd
             other.GetComponentInParent<Player>().damageTaken(3);
+            gCollRb2D.bodyType = RigidbodyType2D.Static;
+            Destroy(gameObject);
+            //
         }
 
 
@@ -81,15 +92,33 @@ public class Weapon : MonoBehaviour
         {
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
-        //kasta
-        gCollRb2D.velocity = new Vector2(throwSpeed, 0);
+
+        //MÅSTE utgå från parents transform som startpos, även efter de-parenting
+        //player scale -5 eller 5
+        if (gameObject.transform.lossyScale.x < 0)
+        {
+            //kasta vänster
+            gCollRb2D.velocity = new Vector2(throwSpeed * -1, 0);
+        }
+        else if (gameObject.transform.lossyScale.x > 0)
+        {
+            //kasta höger
+            gCollRb2D.velocity = new Vector2(throwSpeed, 0);
+        }
+    
         //svärdets pos blir Rb's pos
         gCollRb2D.transform.position = gameObject.transform.position;
-
+        //aktivera parents Hitbox! när player trycker på kast-knappen?
+        //this.gameObject.GetComponentInParent<Player>().activeChild(3);
+        this.gameObject.transform.parent.parent.GetComponent<Player>().activeChild(3);
         //de-parent
         this.gameObject.transform.parent = null;
         //static body?
-        groundCollider.SetActive(true);
+        //hur kan nedan va off men velociteten funkar?
+        //groundCollider.SetActive(true);
+        Destroy(gameObject, .5f);
+
+        //aktivera hurtbox?
 
     }
 

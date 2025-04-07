@@ -9,7 +9,7 @@ using static UnityEngine.GraphicsBuffer;
 public class Target : MonoBehaviour
 {
     public Transform target;
-    public float offset;
+    private float offset;
     public float camSpeed;
     private Player playerScript;
     Vector3 TargetPos = new Vector3(0, 0, -10);
@@ -19,13 +19,13 @@ public class Target : MonoBehaviour
     {
         //starta neutralt
         target = transform;
-        
 
     }
 
     // Update is called once per frame
     void Update()
     {
+       
         //om ingen target angetts vid död,
         //återgå till "neutral"
         if (target == null)
@@ -35,14 +35,10 @@ public class Target : MonoBehaviour
         }
         
 
-
         if (target != transform && !playerScript.isGrounded)//!isGrounded
         {
             //följer INTE Y
             TargetPos = new Vector3(target.position.x, transform.position.y, -10f);
-
-            //transform.position = Vector3.Lerp(transform.position, JumpPos, camSpeed * (Time.deltaTime * 2));
-
 
         }
         else if (target != transform && playerScript.isGrounded)//isGrounded
@@ -53,8 +49,8 @@ public class Target : MonoBehaviour
         }
         if (target != transform)
         {
-            
-            transform.position = Vector3.Lerp(transform.position, TargetPos, camSpeed * (Time.deltaTime * 2));
+            //camSpeed = camSpeed * 2;
+            transform.position = Vector3.Lerp(transform.position, TargetPos, camSpeed * (Time.deltaTime));
 
         }
 
@@ -65,9 +61,12 @@ public class Target : MonoBehaviour
         //matas av DeathTracker i Manager
         //ska röra på sig först när target närmar sig kanten
         //får någon gå utanför bild? bara target låst i bild?
-        //target.position = new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z);
+
         target = currentTarget;
         playerScript = currentTarget.GetComponent<Player>();
+        //?!
+        //camSpeed = camSpeed / 2;
+
         offset = transform.position.y - target.position.y;
 
     }

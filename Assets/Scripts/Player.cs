@@ -14,11 +14,12 @@ public class Player : MonoBehaviour
     private GameObject fist;
     private GameObject foot;
     private GameObject sword;
-   // private bool throwSword = false;
+    private GameObject hurtBox;
+    // private bool throwSword = false;
 
     private float myInputX;
     private float myInputY;
-    private float halfPlayerHeight;
+    public float halfPlayerHeight;
     public int jumpSpeed;
     public int playerHP = 3;
     public int movementSpeed;
@@ -48,12 +49,15 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         halfPlayerHeight = GetComponent<SpriteRenderer>().bounds.size.y / 2; //3 & 1.6
 
+        //child3/hurbox active när man inte har ett svärd
         sword = this.gameObject.transform.GetChild(0).GetChild(0).gameObject;
         sword.SetActive(true);
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
         foot = this.gameObject.transform.GetChild(2).gameObject;
         foot.SetActive(false);
+        hurtBox = this.gameObject.transform.GetChild(3).gameObject;
+        hurtBox.SetActive(false);
 
     }
     #region delay jump
@@ -73,6 +77,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
+        if(this.gameObject.transform.GetChild(0).GetChild(0).transform == null);
+        {
+            Debug.Log(this.gameObject.transform.GetChild(0).GetChild(0));
+            //hurtBox.SetActive(true);
+        }
+        */
         //INPUTS
         if (isPlayer1 == true)
         {
@@ -294,7 +305,27 @@ public class Player : MonoBehaviour
     #region P2binds
     void P2KeyBinds()
     {
-        
+        //sword hi WASD
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            animator.SetTrigger("swordHi");
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            animator.SetTrigger("swordMid");
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            animator.SetTrigger("swordLo");
+        }
+        //svärdkast WASD
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            animator.SetTrigger("throw");
+            sword.GetComponent<Weapon>().ThrowSwordNow();
+
+        }
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             animator.SetTrigger("hit");
@@ -369,6 +400,11 @@ public class Player : MonoBehaviour
         {
             foot.SetActive(true);
         }
+        if (activeChild == 3)
+        {
+            //aktiverar hurtbox
+            hurtBox.SetActive(true);
+        }
 
     }
     //anim event hit
@@ -381,6 +417,11 @@ public class Player : MonoBehaviour
         if (inactivateChild == 2)
         {
             foot.SetActive(false);
+        }
+        if (inactivateChild == 3)
+        {
+            //dektiverar hurtbox
+            hurtBox.SetActive(false);
         }
     }
 
