@@ -59,24 +59,19 @@ public class Weapon : MonoBehaviour
         //otherRb2D = other.GetComponent<Rigidbody2D>();
         
         //om det är fist eller foot - gör bara skada på other
-        if (gameObject.tag == "Weapon" && other.tag != gameObject.transform.parent.tag)
+        if (gameObject.tag == "Weapon")
         {
-            //null ref!
             Debug.Log(gameObject + other.transform.parent.tag);
             //other.GetComponent<Player>().damageTaken(1);
             other.GetComponentInParent<Player>().damageTaken(1);
         }
 
-        if (gameObject.tag == "Sword" && other != grannyBc2D)
+        if (gameObject.tag == "Sword")
         {
-            //hurtbox ej aktiv
-            //Debug.Log("!"+ other.tag);
-            Debug.Log("Sword " + other.tag);
-            //sword player1, p1 dör, p2 tappar svärd
+
             other.GetComponentInParent<Player>().damageTaken(3);
-            gCollRb2D.bodyType = RigidbodyType2D.Static;
-            Destroy(gameObject);
-            //
+            //gCollRb2D.bodyType = RigidbodyType2D.Static;
+
         }
 
 
@@ -110,7 +105,7 @@ public class Weapon : MonoBehaviour
         gCollRb2D.transform.position = gameObject.transform.position;
         //aktivera parents Hitbox! när player trycker på kast-knappen?
         //this.gameObject.GetComponentInParent<Player>().activeChild(3);
-        this.gameObject.transform.parent.parent.GetComponent<Player>().activeChild(3);
+        //this.gameObject.transform.parent.parent.GetComponent<Player>().activeChild(3);
         //de-parent
         this.gameObject.transform.parent = null;
         //static body?

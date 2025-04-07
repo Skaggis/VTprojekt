@@ -28,6 +28,7 @@ public class Manager : MonoBehaviour
     public Transform spawnP2;
     //spawnPos för inst = transform, gameobject för sword
     public Transform spawnNeutral;
+    public GameObject layer;
 
 
     //this.gameObject.transform.parent.parent.GetComponent<Player>().inactivateChild(3); 
@@ -41,6 +42,8 @@ public class Manager : MonoBehaviour
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;
         //halfPlayerHeight = GameObject.Find("Player").GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+
        
     }
 
@@ -83,6 +86,7 @@ public class Manager : MonoBehaviour
             inst1.GetComponent<Player>().isPlayer1 = true;
             //inst1.GetComponent<Player>().Bc2D.enabled = true;
             inst1.tag = "Player1";
+            inst1.layer = 6;
             equip1 = inst1.transform.GetChild(0).gameObject;
 
             //p2 spawnar
@@ -91,6 +95,7 @@ public class Manager : MonoBehaviour
             inst2.GetComponent<Player>().isPlayer1 = false;
             //inst2.GetComponent<Player>().Bc2D.enabled = true;
             inst2.tag = "Player2";
+            inst2.layer = 7;
             equip2 = inst2.transform.GetChild(0).gameObject;
 
             instSword(swordInst1, equip1);

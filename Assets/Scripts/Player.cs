@@ -57,7 +57,18 @@ public class Player : MonoBehaviour
         foot = this.gameObject.transform.GetChild(2).gameObject;
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
-        hurtBox.SetActive(false);
+        hurtBox.SetActive(true);
+
+        foreach (Transform child in transform)
+        {
+            if (transform.childCount != 0)
+            {
+                //sword
+                child.gameObject.layer = gameObject.layer;
+            }
+            //equip, fist, foot
+            child.gameObject.layer = gameObject.layer;
+        }
 
     }
     #region delay jump
