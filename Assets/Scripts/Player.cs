@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
-
+        //om svärd ej är equippat blir throw hiHit
         
         foreach (Transform child in transform)
         {
@@ -274,7 +274,9 @@ public class Player : MonoBehaviour
         //sword hi WASD
         if (Input.GetKeyDown(KeyCode.Keypad0))
         {
-            animator.SetBool("swordReady", true);
+            animator.SetBool("swordReadyHi", false);
+            animator.SetBool("swordReadyMid", true);
+            animator.SetBool("swordReadyLo", false);
         }
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
@@ -282,6 +284,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Keypad2))
         {
+            animator.SetBool("swordReadyMid", false);
             animator.SetTrigger("swordMid");
         }
         if (Input.GetKeyDown(KeyCode.Keypad3))
@@ -334,32 +337,48 @@ public class Player : MonoBehaviour
     #region P2binds
     void P2KeyBinds()
     {
-        //sword hi WASD
+        //sword ready WASD
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            animator.SetBool("swordReadyHi", true);
+            animator.SetBool("swordReadyMid", false);
+            animator.SetBool("swordReadyLo", false);
+        }
         if (Input.GetKeyDown(KeyCode.Keypad5))
         {
-            animator.SetBool("swordReady", true);
+            animator.SetBool("swordReadyHi", false);
+            animator.SetBool("swordReadyMid", true);
+            animator.SetBool("swordReadyLo", false);
         }
+        if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            animator.SetBool("swordReadyHi", false);
+            animator.SetBool("swordReadyMid", false);
+            animator.SetBool("swordReadyLo", true);
+        }
+        //sword hit WASD
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
-            animator.SetBool("swordReady", false);
+            animator.SetBool("swordReadyHi", false);
             animator.SetTrigger("swordHi");
             
         }
         if (Input.GetKeyDown(KeyCode.Keypad8))
         {
-            animator.SetBool("swordReady", false);
+            animator.SetBool("swordReadyMid", false);
             animator.SetTrigger("swordMid");
           
         }
         if (Input.GetKeyDown(KeyCode.Keypad9))
         {
-            animator.SetBool("swordReady", false);
+            animator.SetBool("swordReadyLo", false);
             animator.SetTrigger("swordLo");
            
         }
         //svärdkast WASD
         if (Input.GetKeyDown(KeyCode.Y))
         {
+            animator.SetBool("swordReadyHi", false);
             animator.SetTrigger("throw");
             sword.GetComponent<Weapon>().ThrowSwordNow();
 

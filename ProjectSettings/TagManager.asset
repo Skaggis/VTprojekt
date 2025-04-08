@@ -13,6 +13,7 @@ TagManager:
   - Goal_P2
   - Sword
   - equip
+  - groundCollider
   layers:
   - Default
   - TransparentFX

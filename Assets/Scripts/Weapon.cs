@@ -19,6 +19,7 @@ public class Weapon : MonoBehaviour
     private Rigidbody2D gCollRb2D;
     //public Rigidbody2D otherRb2D;
     public BoxCollider2D thisBc2D;
+
     //public BoxCollider2D grannyBc2D;
 
 
@@ -30,8 +31,10 @@ public class Weapon : MonoBehaviour
         thisBc2D = gameObject.GetComponent<BoxCollider2D>();
         //gäller swords child
         gCollRb2D = this.GetComponentInChildren<Rigidbody2D>();
+   
 
         //alla svärd -> checka om parents lager är 6 eller 7
+
         if (this.gameObject.transform.parent.gameObject.layer == 6)
         {
             this.gameObject.layer = 6;
@@ -43,7 +46,7 @@ public class Weapon : MonoBehaviour
             this.gameObject.layer = 7;
             this.gameObject.transform.GetChild(0).gameObject.layer = 7;
         }
-
+        
 
         #region gammal prevent collision
         /*
@@ -81,7 +84,7 @@ public class Weapon : MonoBehaviour
             other.GetComponentInParent<Player>().damageTaken(1);
         }
 
-        if (gameObject.tag == "Sword")
+        if (gameObject.tag == "Sword" && gameObject.layer != 0)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
             other.GetComponentInParent<Player>().damageTaken(3);
@@ -89,7 +92,21 @@ public class Weapon : MonoBehaviour
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
 
         }
+        if (gameObject.tag == "Sword" && gameObject.layer == 0)
+        {
+            //aktiverar ej sitt child, zero gravity
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            //groundCollider = gameObject.transform.GetChild(0).gameObject;
+            //groundCollider.SetActive(true);
+            Debug.Log("child tagg " + gameObject.transform.GetChild(0).tag);
+            //parentar korrekt
+            gameObject.transform.SetParent(other.transform.GetChild(0).transform);
+            //assignar layer korrekt
+            gameObject.layer = other.transform.gameObject.layer;
+            //static för att kunna passera om svärdet ligger på marken
+            //gCollRb2D.bodyType = RigidbodyType2D.Static;
 
+        }
 
     }
     public void ThrowSwordNow()
@@ -110,21 +127,29 @@ public class Weapon : MonoBehaviour
         {
             //kasta vänster
             gCollRb2D.velocity = new Vector2(throwSpeed * -1, 0);
+            //rotation?
+            //gCollRb2D.transform.RotateAround(gCollRb2D.transform.position, Vector3.up, 20 * Time.deltaTime);
+            gameObject.transform.Rotate(Vector3.up, -180 * Time.deltaTime);
+
         }
         else if (gameObject.transform.lossyScale.x > 0)
         {
             //kasta höger
-            gCollRb2D.velocity = new Vector2(throwSpeed, 0);
+            gCollRb2D.velocity = new Vector2(throwSpeed, 0);            
+            //rotation?
+
         }
     
         //svärdets pos blir Rb's pos
         gCollRb2D.transform.position = gameObject.transform.position;
+      
+        //gCollRb2D.transform.rotation = gameObject.transform.rotation;
         //de-parent
         this.gameObject.transform.parent = null;
         //static body?
 
         //groundCollider.SetActive(true);
-        Destroy(gameObject, .5f);
+        Destroy(gameObject, 1f);
 
         //aktivera hurtbox?
 

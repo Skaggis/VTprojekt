@@ -16,17 +16,21 @@ public class Manager : MonoBehaviour
     private GameObject inst2;
     public GameObject equip1;
     public GameObject equip2;
-    public GameObject equipNeutral;
+    //equipNeutral borde vara vec2 för att inte ärva skit?
+    //public GameObject equipNeutral;
     
     public GameObject Sword;
-    private GameObject swordInst1;
-    private GameObject swordInst2;
+    public GameObject swordInst1;
+    public GameObject swordInst2;
 
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
     public Transform spawnP1;
     public Transform spawnP2;
     //spawnPos för inst = transform, gameobject för sword
+    public Transform equipNeutral;
+
+
     //public Transform spawnNeutral;
     //public GameObject layer;
 
@@ -71,11 +75,12 @@ public class Manager : MonoBehaviour
         Vector2 initialSpawnP2minusZ = initialSpawnP2.transform.position;
         Vector2 spawnP1minusZ = spawnP1.transform.position;
         Vector2 spawnP2minusZ = spawnP2.transform.position;
-     
+        Vector2 equipNeutralminusZ = equipNeutral.transform.position;
+
         // equip1 = inst1.transform.Find("equip").gameObject;
         // equip2 = inst2.transform.Find("equip").gameObject;
 
-    bool initialSpawn = true;
+        bool initialSpawn = true;
         //initialSpawnPoint i bild
         if (inst1 == null && inst2 == null && swordInst1 == null && swordInst2 == null && initialSpawn == true)
         {
@@ -117,6 +122,7 @@ public class Manager : MonoBehaviour
                     inst1.GetComponent<Player>().isPlayer1 = true;
                     //inst1.GetComponent<Player>().Bc2D.enabled = true;
                     inst1.tag = "Player1";
+                    inst1.layer = 6;
                     equip1 = inst1.transform.GetChild(0).gameObject;
 
                     initialSpawnP2minusZ = initialSpawnP2.transform.position;
@@ -125,6 +131,7 @@ public class Manager : MonoBehaviour
                     inst2.GetComponent<Player>().isPlayer1 = false;
                    // inst2.GetComponent<Player>().Bc2D.enabled = true;
                     inst2.tag = "Player2";
+                    inst2.layer = 7;
                     equip2 = inst2.transform.GetChild(0).gameObject;
 
                     instSword(swordInst1, equip1);
@@ -140,13 +147,25 @@ public class Manager : MonoBehaviour
                     spawnP1minusZ = spawnP1.transform.position;
                     inst1 = Instantiate(Player, spawnP1minusZ, Quaternion.identity);
                     inst1.GetComponent<Player>().isPlayer1 = true;
-                   // inst1.GetComponent<Player>().Bc2D.enabled = true;
+                    //inst1.GetComponent<Player>().Bc2D.enabled = true;
                     inst1.tag = "Player1";
+                    inst1.layer = 6;
                     equip1 = inst1.transform.GetChild(0).gameObject;
                     instSword(swordInst1, equip1);
   
                 }
+                
+                if (swordInst1 == null)
+                {
 
+                    swordInst1 = Instantiate(Sword, equipNeutralminusZ, Quaternion.identity);
+                   // swordInst1.transform.localPosition = Vector3.zero;
+                    swordInst1.transform.localScale = new Vector3(0.3f, 0.3f, 0);
+                   // swordInst1.transform.localRotation = Quaternion.identity;
+                 
+
+                }
+                
                 if (inst2 == null && swordInst2 == null)
                 {
                     yield return new WaitForSeconds(3);
@@ -158,6 +177,7 @@ public class Manager : MonoBehaviour
                     inst2.GetComponent<Player>().isPlayer1 = false;
                    // inst2.GetComponent<Player>().Bc2D.enabled = true;
                     inst2.tag = "Player2";
+                    inst2.layer = 7;
                     equip2 = inst2.transform.GetChild(0).gameObject;
                     instSword(swordInst2, equip2);
                 }
@@ -184,22 +204,16 @@ public class Manager : MonoBehaviour
 
         //null ref?
         swordInst = Instantiate(Sword, equipTransform.transform.position, Quaternion.identity);
+        
         //parent:a och nollställ pos//ärv inte scale!
         swordInst.transform.SetParent(equipTransform.transform);
         //hämta parentLayer, assigna?
         swordInst.transform.localPosition = Vector3.zero;
         swordInst.transform.localScale = new Vector3(0.3f, 0.3f, 0);
         swordInst.transform.localRotation = Quaternion.identity;
-        /*
-        if (equipTransform.gameObject.layer == 6)
-        {
-            swordInst.transform.gameObject.layer = 6;
-        }
-        else if (equipTransform.gameObject.layer == 7)
-        {
-            swordInst.transform.gameObject.layer = 7;
-        }
-        */
+        swordInst1 = swordInst;
+        //swordInst1.transform.GetChild(0).gameObject.SetActive(true);
+
     }
 
     public void DeathTracker(GameObject objDestroy)
