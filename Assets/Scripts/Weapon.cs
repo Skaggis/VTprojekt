@@ -12,40 +12,55 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject Player;
-    public GameObject groundCollider;
+    //public GameObject Player;
+    //public GameObject groundCollider;
     //public GameObject hurtBox;
     public int throwSpeed;
     private Rigidbody2D gCollRb2D;
     //public Rigidbody2D otherRb2D;
     public BoxCollider2D thisBc2D;
-    public BoxCollider2D grannyBc2D;
+    //public BoxCollider2D grannyBc2D;
 
 
     // Start is called before the first frame update
     void Start()
     {
-       //Player = GameObject.Find("Player").GetComponent<Player>();
+        //gäller de med scriptet - fist, foot, sword
         gameObject.SetActive(true);
-        //gäller fist, foot OCH sword
         thisBc2D = gameObject.GetComponent<BoxCollider2D>();
-        //otherRb2D = GameObject.Find("Player").GetComponent<Rigidbody2D>();
+        //gäller swords child
+        gCollRb2D = this.GetComponentInChildren<Rigidbody2D>();
 
-        //if "weapon" parent bc2d = senare ignore,
-        //eller layers???
+        //alla svärd -> checka om parents lager är 6 eller 7
+        if (this.gameObject.transform.parent.gameObject.layer == 6)
+        {
+            this.gameObject.layer = 6;
+            //sword groundColl
+            this.gameObject.transform.GetChild(0).gameObject.layer = 6;
+        }
+        else if (this.gameObject.transform.parent.gameObject.layer == 7)
+        {
+            this.gameObject.layer = 7;
+            this.gameObject.transform.GetChild(0).gameObject.layer = 7;
+        }
 
+
+        #region gammal prevent collision
+        /*
         //gäller enbart sword/equippable grandchild
         if (gameObject.tag == "Sword")
         {
             grannyBc2D = gameObject.transform.parent.parent.GetComponent<BoxCollider2D>();
             Physics2D.IgnoreCollision(thisBc2D, grannyBc2D, true);
-            Debug.Log(grannyBc2D, thisBc2D);
+
             //har Rb2D + boxCollider
             groundCollider = this.gameObject.transform.GetChild(0).gameObject;
             groundCollider.SetActive(false);
             gCollRb2D = this.GetComponentInChildren<Rigidbody2D>();
+            Debug.Log("thisBc2D: " + thisBc2D + " grannyBc2D: " + grannyBc2D);
         }
-        
+        */
+        #endregion
     }
 
     // Update is called once per frame
@@ -61,15 +76,16 @@ public class Weapon : MonoBehaviour
         //om det är fist eller foot - gör bara skada på other
         if (gameObject.tag == "Weapon")
         {
-            Debug.Log(gameObject + other.transform.parent.tag);
+            //Debug.Log(gameObject.tag + other.transform.parent.tag);
             //other.GetComponent<Player>().damageTaken(1);
             other.GetComponentInParent<Player>().damageTaken(1);
         }
 
         if (gameObject.tag == "Sword")
         {
-
+            //Debug.Log(gameObject.tag + other.transform.parent.tag);
             other.GetComponentInParent<Player>().damageTaken(3);
+            //static för att kunna passera om svärdet ligger på marken
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
 
         }
@@ -103,13 +119,10 @@ public class Weapon : MonoBehaviour
     
         //svärdets pos blir Rb's pos
         gCollRb2D.transform.position = gameObject.transform.position;
-        //aktivera parents Hitbox! när player trycker på kast-knappen?
-        //this.gameObject.GetComponentInParent<Player>().activeChild(3);
-        //this.gameObject.transform.parent.parent.GetComponent<Player>().activeChild(3);
         //de-parent
         this.gameObject.transform.parent = null;
         //static body?
-        //hur kan nedan va off men velociteten funkar?
+
         //groundCollider.SetActive(true);
         Destroy(gameObject, .5f);
 

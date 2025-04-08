@@ -16,7 +16,7 @@ public class Manager : MonoBehaviour
     private GameObject inst2;
     public GameObject equip1;
     public GameObject equip2;
-    private GameObject equipNeutral;
+    public GameObject equipNeutral;
     
     public GameObject Sword;
     private GameObject swordInst1;
@@ -27,8 +27,8 @@ public class Manager : MonoBehaviour
     public Transform spawnP1;
     public Transform spawnP2;
     //spawnPos för inst = transform, gameobject för sword
-    public Transform spawnNeutral;
-    public GameObject layer;
+    //public Transform spawnNeutral;
+    //public GameObject layer;
 
 
     //this.gameObject.transform.parent.parent.GetComponent<Player>().inactivateChild(3); 
@@ -43,8 +43,6 @@ public class Manager : MonoBehaviour
         cam = GameObject.Find("Main Camera").gameObject;
         //halfPlayerHeight = GameObject.Find("Player").GetComponent<SpriteRenderer>().bounds.size.y / 2;
 
-
-       
     }
 
     // Update is called once per frame
@@ -79,7 +77,7 @@ public class Manager : MonoBehaviour
 
     bool initialSpawn = true;
         //initialSpawnPoint i bild
-        if (inst1 == null && inst2 == null && initialSpawn == true)
+        if (inst1 == null && inst2 == null && swordInst1 == null && swordInst2 == null && initialSpawn == true)
         {
             //p1 spawnar
             inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
@@ -87,8 +85,11 @@ public class Manager : MonoBehaviour
             //inst1.GetComponent<Player>().Bc2D.enabled = true;
             inst1.tag = "Player1";
             inst1.layer = 6;
+            //equip1-variabel enbart för pos att spawna svärd på här,
+            //equip1 får layer tilldelat i Playerscript via: 
+            //child.gameObject.layer = gameObject.layer;
             equip1 = inst1.transform.GetChild(0).gameObject;
-
+            
             //p2 spawnar
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
@@ -106,11 +107,10 @@ public class Manager : MonoBehaviour
             while (initialSpawn == false)
             {
                 //initialSpawnPoint i bild
-                if (inst1 == null && inst2 == null)
+                if (inst1 == null && inst2 == null && swordInst1 == null && swordInst2 == null)
                 {
                     yield return new WaitForSeconds(1);
-                    instSword(swordInst1, equip1);
-                    instSword(swordInst2, equip2);
+                    
 
                     initialSpawnP1minusZ = initialSpawnP1.transform.position;
                     inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
@@ -118,18 +118,22 @@ public class Manager : MonoBehaviour
                     //inst1.GetComponent<Player>().Bc2D.enabled = true;
                     inst1.tag = "Player1";
                     equip1 = inst1.transform.GetChild(0).gameObject;
+
                     initialSpawnP2minusZ = initialSpawnP2.transform.position;
                     inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
+                    inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
                     inst2.GetComponent<Player>().isPlayer1 = false;
                    // inst2.GetComponent<Player>().Bc2D.enabled = true;
                     inst2.tag = "Player2";
                     equip2 = inst2.transform.GetChild(0).gameObject;
-                    inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
+
+                    instSword(swordInst1, equip1);
+                    instSword(swordInst2, equip2);
                 }
 
-                if (inst1 == null)
+                if (inst1 == null && swordInst1 == null)
                 {
-                    Debug.Log("inst1 == null");
+                    //Debug.Log("inst1 == null");
                     yield return new WaitForSeconds(3);
                     //spawnPoint utanför bild
                     //vänster om Viewport
@@ -143,7 +147,7 @@ public class Manager : MonoBehaviour
   
                 }
 
-                if (inst2 == null)
+                if (inst2 == null && swordInst2 == null)
                 {
                     yield return new WaitForSeconds(3);
                     //spawnPoint utanför bild
@@ -177,14 +181,25 @@ public class Manager : MonoBehaviour
     }
     void instSword(GameObject swordInst, GameObject equipTransform)
     {
+
         //null ref?
         swordInst = Instantiate(Sword, equipTransform.transform.position, Quaternion.identity);
         //parent:a och nollställ pos//ärv inte scale!
         swordInst.transform.SetParent(equipTransform.transform);
+        //hämta parentLayer, assigna?
         swordInst.transform.localPosition = Vector3.zero;
         swordInst.transform.localScale = new Vector3(0.3f, 0.3f, 0);
         swordInst.transform.localRotation = Quaternion.identity;
-
+        /*
+        if (equipTransform.gameObject.layer == 6)
+        {
+            swordInst.transform.gameObject.layer = 6;
+        }
+        else if (equipTransform.gameObject.layer == 7)
+        {
+            swordInst.transform.gameObject.layer = 7;
+        }
+        */
     }
 
     public void DeathTracker(GameObject objDestroy)
@@ -195,7 +210,7 @@ public class Manager : MonoBehaviour
         {
             //toggla sprite "RUN ->" 
             cam.GetComponent<Target>().LockOn(inst1.transform);
-            Debug.Log("p1 target");
+            //Debug.Log("p1 target");
 
             //toggla sprite "RUN ->" 
 
@@ -205,7 +220,7 @@ public class Manager : MonoBehaviour
         {
             //toggla sprite "RUN ->" 
             cam.GetComponent<Target>().LockOn(inst2.transform);
-            Debug.Log("p2 target");
+            //Debug.Log("p2 target");
         }
 
     }

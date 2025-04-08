@@ -796,12 +796,12 @@ MonoBehaviour:
   Player: {fileID: 5645951320268626478, guid: a0cc4a8eac4b5844e8a48ce1a4a0c100, type: 3}
   equip1: {fileID: 0}
   equip2: {fileID: 0}
+  equipNeutral: {fileID: 1932992405}
   Sword: {fileID: 1798184683213742894, guid: 997065e9947c2064bad807839f8b4c8c, type: 3}
   initialSpawnP1: {fileID: 726381557}
   initialSpawnP2: {fileID: 121956026}
   spawnP1: {fileID: 112140005}
   spawnP2: {fileID: 1414147909}
-  spawnNeutral: {fileID: 1932992406}
 --- !u!1 &1414147908
 GameObject:
   m_ObjectHideFlags: 0
@@ -1428,7 +1428,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1932992406}
   m_Layer: 0
-  m_Name: spawnNeutral
+  m_Name: equipNeutral
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

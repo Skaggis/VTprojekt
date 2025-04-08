@@ -59,17 +59,30 @@ public class Player : MonoBehaviour
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
 
+        
         foreach (Transform child in transform)
         {
-            if (transform.childCount != 0)
-            {
-                //sword
-                child.gameObject.layer = gameObject.layer;
-            }
-            //equip, fist, foot
+            //equip, fist, foot, hurtbox
             child.gameObject.layer = gameObject.layer;
-        }
+            //hämta barnbarn(sword) och barnbarnsbarn(gCollRb2D)??? och assigna Layer
 
+            //här var sword-layer innan
+
+        }
+        /*
+        //sword layer
+        if (this.gameObject.layer == 6)
+        {
+            sword.layer = 6;
+            //sword groundColl
+            sword.transform.GetChild(0).gameObject.layer = 6;
+        }
+        else if (this.gameObject.layer == 7)
+        {
+            sword.layer = 7;
+            sword.transform.GetChild(0).gameObject.layer = 7;
+        }
+        */
     }
     #region delay jump
     private IEnumerator DelayedJump()
@@ -220,6 +233,7 @@ public class Player : MonoBehaviour
     #region goal
     private void OnTriggerEnter2D(Collider2D other)
     {
+        //vem känner av detta? player boxcoll är ej trigger, hurtbox är det
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
             //volt ist för hopp
@@ -258,6 +272,10 @@ public class Player : MonoBehaviour
     void P1KeyBinds()
     {
         //sword hi WASD
+        if (Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            animator.SetBool("swordReady", true);
+        }
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
             animator.SetTrigger("swordHi");
@@ -317,17 +335,27 @@ public class Player : MonoBehaviour
     void P2KeyBinds()
     {
         //sword hi WASD
-        if (Input.GetKeyDown(KeyCode.Keypad4))
-        {
-            animator.SetTrigger("swordHi");
-        }
         if (Input.GetKeyDown(KeyCode.Keypad5))
         {
-            animator.SetTrigger("swordMid");
+            animator.SetBool("swordReady", true);
         }
-        if (Input.GetKeyDown(KeyCode.Keypad6))
+        if (Input.GetKeyDown(KeyCode.Keypad7))
         {
+            animator.SetBool("swordReady", false);
+            animator.SetTrigger("swordHi");
+            
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            animator.SetBool("swordReady", false);
+            animator.SetTrigger("swordMid");
+          
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            animator.SetBool("swordReady", false);
             animator.SetTrigger("swordLo");
+           
         }
         //svärdkast WASD
         if (Input.GetKeyDown(KeyCode.Y))
@@ -373,13 +401,13 @@ public class Player : MonoBehaviour
 
         if (playerHP <= 0)
         {
+            Bc2D.enabled = false;
             //dead anim har event för Die-func
             animator.SetTrigger("dead");
             //static Rb2D för att inte falla genom marken
             Rb2D.bodyType = RigidbodyType2D.Static;
             //disable för att kunna kliva över kroppen
-            Bc2D.enabled = false;
-
+            
             Manager.GetComponent<Manager>().DeathTracker(gameObject);
 
         }
@@ -402,7 +430,12 @@ public class Player : MonoBehaviour
     //anim event hit
     public void activeChild(int activeChild)
     {
-
+        /*
+        if (activeChild == 0)
+        {
+            sword.SetActive(true);
+        }
+        */
         if (activeChild == 1)
         {
             fist.SetActive(true);
@@ -413,7 +446,7 @@ public class Player : MonoBehaviour
         }
         if (activeChild == 3)
         {
-            //aktiverar hurtbox
+            //aktiverar hurtbox - används detta?
             hurtBox.SetActive(true);
         }
 
@@ -421,6 +454,12 @@ public class Player : MonoBehaviour
     //anim event hit
     public void inactivateChild(int inactivateChild)
     {
+        /*
+        if (inactivateChild == 0)
+        {
+            sword.SetActive(false);
+        }
+        */
         if (inactivateChild == 1)
         {
             fist.SetActive(false);
