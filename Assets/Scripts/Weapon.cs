@@ -12,7 +12,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Weapon : MonoBehaviour
 {
-    //public GameObject Player;
+    public GameObject Player;
     //public GameObject groundCollider;
     //public GameObject hurtBox;
     public int throwSpeed;
@@ -35,7 +35,11 @@ public class Weapon : MonoBehaviour
 
         //alla svärd -> checka om parents lager är 6 eller 7
 
-        if (this.gameObject.transform.parent.gameObject.layer == 6)
+        if (this.gameObject.transform.parent == null)
+        {
+            this.gameObject.layer = 0;
+        }
+        else if (this.gameObject.transform.parent.gameObject.layer == 6)
         {
             this.gameObject.layer = 6;
             //sword groundColl
@@ -46,7 +50,8 @@ public class Weapon : MonoBehaviour
             this.gameObject.layer = 7;
             this.gameObject.transform.GetChild(0).gameObject.layer = 7;
         }
-        
+
+
 
         #region gammal prevent collision
         /*
@@ -83,29 +88,29 @@ public class Weapon : MonoBehaviour
             //other.GetComponent<Player>().damageTaken(1);
             other.GetComponentInParent<Player>().damageTaken(1);
         }
-
+        //om svärdet kollide:ar när den har tilldelat lager (parent)
         if (gameObject.tag == "Sword" && gameObject.layer != 0)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
+            //96 får null ref
             other.GetComponentInParent<Player>().damageTaken(3);
             //static för att kunna passera om svärdet ligger på marken
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
 
         }
+        //om svärdet kollide:ar när den är neutral pick-up
+
+        //DEN FÅR INTE KROCKA MED ANNAT SVÄRD I DETTA LÄGE
         if (gameObject.tag == "Sword" && gameObject.layer == 0)
         {
             //aktiverar ej sitt child, zero gravity
             gameObject.transform.GetChild(0).gameObject.SetActive(false);
-            //groundCollider = gameObject.transform.GetChild(0).gameObject;
-            //groundCollider.SetActive(true);
-            Debug.Log("child tagg " + gameObject.transform.GetChild(0).tag);
-            //parentar korrekt
-            gameObject.transform.SetParent(other.transform.GetChild(0).transform);
-            //assignar layer korrekt
-            gameObject.layer = other.transform.gameObject.layer;
-            //static för att kunna passera om svärdet ligger på marken
-            //gCollRb2D.bodyType = RigidbodyType2D.Static;
 
+            //parenta enbart om Equip inte redan har barn?
+            gameObject.transform.SetParent(other.transform.GetChild(0).transform);
+            gameObject.transform.localPosition = Vector3.zero;
+            //assigna layer för svärd och dess groundColl sker i PlayerScript
+            other.GetComponent<Player>().sword = gameObject;
         }
 
     }
@@ -115,6 +120,9 @@ public class Weapon : MonoBehaviour
     }
     private IEnumerator ThrowSword()
     {
+
+        //kastar åt fel håll när man plockat upp pick-up
+
         int frameDelay = 25; // Antal FixedUpdate-cykler att vänta, en cykel är 50 fps
         for (int i = 0; i < frameDelay; i++)
         {
@@ -125,6 +133,7 @@ public class Weapon : MonoBehaviour
         //player scale -5 eller 5
         if (gameObject.transform.lossyScale.x < 0)
         {
+            Debug.Log(gameObject.transform.lossyScale.x + "mindre än 0");
             //kasta vänster
             gCollRb2D.velocity = new Vector2(throwSpeed * -1, 0);
             //rotation?
@@ -135,15 +144,17 @@ public class Weapon : MonoBehaviour
         else if (gameObject.transform.lossyScale.x > 0)
         {
             //kasta höger
+            //rätt håll en gång,ibland?
+            Debug.Log(gameObject.transform.lossyScale.x + "större än 0");
             gCollRb2D.velocity = new Vector2(throwSpeed, 0);            
             //rotation?
 
         }
     
-        //svärdets pos blir Rb's pos
+        //svärdets pos blir Rb's pos, hänger med i farten
         gCollRb2D.transform.position = gameObject.transform.position;
-      
         //gCollRb2D.transform.rotation = gameObject.transform.rotation;
+
         //de-parent
         this.gameObject.transform.parent = null;
         //static body?
@@ -151,7 +162,7 @@ public class Weapon : MonoBehaviour
         //groundCollider.SetActive(true);
         Destroy(gameObject, 1f);
 
-        //aktivera hurtbox?
+        //kalla på ny Spawna svärd-funktion???
 
     }
 

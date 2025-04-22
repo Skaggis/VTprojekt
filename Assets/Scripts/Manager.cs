@@ -18,25 +18,25 @@ public class Manager : MonoBehaviour
     public GameObject equip2;
     //equipNeutral borde vara vec2 för att inte ärva skit?
     //public GameObject equipNeutral;
-    
+
+    public GameObject RunP1;
+    public GameObject RunP2;    
+
     public GameObject Sword;
+    //när swordInst1&2 är private spawnar enbart två fröst
+    //när de är public blir d 3
     public GameObject swordInst1;
     public GameObject swordInst2;
+    private GameObject swordInst;
 
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
     public Transform spawnP1;
     public Transform spawnP2;
     //spawnPos för inst = transform, gameobject för sword
+    //neutral är ej neutral
     public Transform equipNeutral;
 
-
-    //public Transform spawnNeutral;
-    //public GameObject layer;
-
-
-    //this.gameObject.transform.parent.parent.GetComponent<Player>().inactivateChild(3); 
-    // innan sword spawnas hurtBox.SetActive(false);
 
     // Start is called before the first frame update
     //Awake samma som start fast lite före
@@ -46,12 +46,22 @@ public class Manager : MonoBehaviour
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;
         //halfPlayerHeight = GameObject.Find("Player").GetComponent<SpriteRenderer>().bounds.size.y / 2;
+        RunP1.SetActive(false);
+        RunP2.SetActive(false);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        //hämta swordInst1 & 2 för att kunna checka om de ska spawna
+        
+        //swordInst1 = inst1.gameObject.transform.GetChild(0).GetChild(0);
+        //swordInst1 = GameObject.FindWithTag("Player1").gameObject.transform.GetChild(0).GetChild(0);
+
+        //swordInst2 = GameObject.FindWithTag("Player2").gameObject;
+        //gameObject.transform.GetChild(0).gameObject.layer = 6;
+
         //se till att hela spriten syns
         /*
         Vector3 position = transform.position;
@@ -66,7 +76,7 @@ public class Manager : MonoBehaviour
         position.y = Mathf.Clamp(position.y, hiLeftBorder, hiRightBorder);
         transform.position = position;
         */
-  
+
     }
 
     IEnumerator Spawner()
@@ -124,6 +134,7 @@ public class Manager : MonoBehaviour
                     inst1.tag = "Player1";
                     inst1.layer = 6;
                     equip1 = inst1.transform.GetChild(0).gameObject;
+                    
 
                     initialSpawnP2minusZ = initialSpawnP2.transform.position;
                     inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
@@ -140,6 +151,7 @@ public class Manager : MonoBehaviour
 
                 if (inst1 == null && swordInst1 == null)
                 {
+                    
                     //Debug.Log("inst1 == null");
                     yield return new WaitForSeconds(3);
                     //spawnPoint utanför bild
@@ -152,22 +164,26 @@ public class Manager : MonoBehaviour
                     inst1.layer = 6;
                     equip1 = inst1.transform.GetChild(0).gameObject;
                     instSword(swordInst1, equip1);
-  
+                    
+
                 }
                 
                 if (swordInst1 == null)
                 {
-
+                    
+                    yield return new WaitForSeconds(3);
+                    //är det denna som är fel?
                     swordInst1 = Instantiate(Sword, equipNeutralminusZ, Quaternion.identity);
-                   // swordInst1.transform.localPosition = Vector3.zero;
-                    swordInst1.transform.localScale = new Vector3(0.3f, 0.3f, 0);
-                   // swordInst1.transform.localRotation = Quaternion.identity;
-                 
-
-                }
+                    Debug.Log("swordInst1 spawnar neutralt");
+                    // swordInst1.transform.localPosition = Vector3.zero;
+                    swordInst1.transform.localScale = new Vector3(0.3f * Player.transform.localScale.x, 0.3f * Player.transform.localScale.y, 0) ;
+                    swordInst1.transform.localRotation = Quaternion.identity;
+                
+                    }
                 
                 if (inst2 == null && swordInst2 == null)
                 {
+                    
                     yield return new WaitForSeconds(3);
                     //spawnPoint utanför bild
                     //höger om Viewport
@@ -180,19 +196,34 @@ public class Manager : MonoBehaviour
                     inst2.layer = 7;
                     equip2 = inst2.transform.GetChild(0).gameObject;
                     instSword(swordInst2, equip2);
-                }
-                /*
-                if (swordInst1 == null)
-                {
-                   // yield return new WaitForSeconds(3);
-                    instSword(swordInst1, equipNeutral);
-                   //Player -> inactivateChild(3) (inaktivera hurtbox)
+                    
                 }
                 
-                else if (swordInst2 == null)
+                if (swordInst2 == null)
                 {
-                    //yield return new WaitForSeconds(3);
-                    instSword(swordInst2, spawnNeutral);
+                    yield return new WaitForSeconds(3);
+                    //är det denna som är fel?
+                    swordInst2 = Instantiate(Sword, equipNeutralminusZ, Quaternion.identity);
+                    Debug.Log("swordInst2 spawnar neutralt");
+                    // hamnar högt upp,dör on collision
+                    // swordInst1.transform.localPosition = Vector3.zero;
+                    swordInst2.transform.localScale = new Vector3(0.3f * Player.transform.localScale.x, 0.3f * Player.transform.localScale.y, 0);
+                    swordInst2.transform.localRotation = Quaternion.identity;
+                }
+                
+                /*
+                //kolla bara om swordInst (neutral) finns?
+                if (swordInst1 == null || swordInst2 == null) 
+                {
+                    //går väldigt fort, byt till spawnPoint utanför bild?
+                    yield return new WaitForSeconds(3);
+                    
+                    swordInst = Instantiate(Sword, equipNeutralminusZ, Quaternion.identity);
+                    Debug.Log("swordInst spawnar neutralt");
+                    
+                    //swordInst.transform.localPosition = Vector3.zero;
+                    swordInst.transform.localScale = new Vector3(0.3f * Player.transform.localScale.x, 0.3f * Player.transform.localScale.y, 0);
+                    swordInst.transform.localRotation = Quaternion.identity;
                 }
                 */
                 yield return null;
@@ -211,8 +242,7 @@ public class Manager : MonoBehaviour
         swordInst.transform.localPosition = Vector3.zero;
         swordInst.transform.localScale = new Vector3(0.3f, 0.3f, 0);
         swordInst.transform.localRotation = Quaternion.identity;
-        swordInst1 = swordInst;
-        //swordInst1.transform.GetChild(0).gameObject.SetActive(true);
+
 
     }
 
@@ -225,7 +255,7 @@ public class Manager : MonoBehaviour
             //toggla sprite "RUN ->" 
             cam.GetComponent<Target>().LockOn(inst1.transform);
             //Debug.Log("p1 target");
-
+           // RunP2.SetActive(true);
             //toggla sprite "RUN ->" 
 
         }

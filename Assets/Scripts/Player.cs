@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     public Target cam;
     private GameObject fist;
     private GameObject foot;
-    private GameObject sword;
+    public GameObject sword;
     private GameObject hurtBox;
     // private bool throwSword = false;
 
@@ -64,25 +64,25 @@ public class Player : MonoBehaviour
         {
             //equip, fist, foot, hurtbox
             child.gameObject.layer = gameObject.layer;
-            //hämta barnbarn(sword) och barnbarnsbarn(gCollRb2D)??? och assigna Layer
-
-            //här var sword-layer innan
 
         }
-        /*
+        
         //sword layer
         if (this.gameObject.layer == 6)
         {
             sword.layer = 6;
             //sword groundColl
             sword.transform.GetChild(0).gameObject.layer = 6;
+            Manager.GetComponent<Manager>().swordInst1 = sword;
+            //Manager verkar tappa referensen?
         }
         else if (this.gameObject.layer == 7)
         {
             sword.layer = 7;
             sword.transform.GetChild(0).gameObject.layer = 7;
+            Manager.GetComponent<Manager>().swordInst2 = sword;
         }
-        */
+        
     }
     #region delay jump
     private IEnumerator DelayedJump()
