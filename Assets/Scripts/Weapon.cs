@@ -13,16 +13,11 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class Weapon : MonoBehaviour
 {
     public GameObject Player;
-    //public GameObject groundCollider;
-    //public GameObject hurtBox;
+    public GameObject Manager;
     public int throwSpeed;
     private Rigidbody2D gCollRb2D;
-    //public Rigidbody2D otherRb2D;
     public BoxCollider2D thisBc2D;
-
-    //public BoxCollider2D grannyBc2D;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +26,7 @@ public class Weapon : MonoBehaviour
         thisBc2D = gameObject.GetComponent<BoxCollider2D>();
         //gäller swords child
         gCollRb2D = this.GetComponentInChildren<Rigidbody2D>();
-   
+        Manager = GameObject.FindWithTag("Manager");
 
         //alla svärd -> checka om parents lager är 6 eller 7
 
@@ -92,7 +87,7 @@ public class Weapon : MonoBehaviour
         if (gameObject.tag == "Sword" && gameObject.layer != 0)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
-            //96 får null ref
+            //rad 91 får null ref
             other.GetComponentInParent<Player>().damageTaken(3);
             //static för att kunna passera om svärdet ligger på marken
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
@@ -107,10 +102,19 @@ public class Weapon : MonoBehaviour
             gameObject.transform.GetChild(0).gameObject.SetActive(false);
 
             //parenta enbart om Equip inte redan har barn?
-            gameObject.transform.SetParent(other.transform.GetChild(0).transform);
-            gameObject.transform.localPosition = Vector3.zero;
-            //assigna layer för svärd och dess groundColl sker i PlayerScript
-            other.GetComponent<Player>().sword = gameObject;
+            //out of bounds -> funktion m foreach ist? return eller null
+            if (other.transform.GetChild(0).transform.GetChild(0) == null)
+            {
+                gameObject.transform.SetParent(other.transform.GetChild(0).transform);
+                gameObject.transform.localPosition = Vector3.zero;
+                //assigna layer för svärd och dess groundColl sker i PlayerScript
+                other.GetComponent<Player>().sword = gameObject;
+            }
+            else
+            {
+                Debug.Log("equip aldready equipped");
+            }
+            
         }
 
     }
@@ -161,8 +165,10 @@ public class Weapon : MonoBehaviour
 
         //groundCollider.SetActive(true);
         Destroy(gameObject, 1f);
-
         //kalla på ny Spawna svärd-funktion???
+        Manager.GetComponent<Manager>().swordPop--;
+        Manager.GetComponent<Manager>().SwordTracker(gameObject);
+        
 
     }
 
