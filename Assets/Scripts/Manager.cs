@@ -89,8 +89,8 @@ public class Manager : MonoBehaviour
         Vector2 initialSpawnP2minusZ = initialSpawnP2.transform.position;
         Vector2 spawnP1minusZ = spawnP1.transform.position;
         Vector2 spawnP2minusZ = spawnP2.transform.position;
-        Vector2 spawnSwordP1minusZ = spawnSwordP1.transform.position;
-        Vector2 spawnSwordP2minusZ = spawnSwordP2.transform.position;
+       // Vector2 spawnSwordP1minusZ = spawnSwordP1.transform.position;
+        //Vector2 spawnSwordP2minusZ = spawnSwordP2.transform.position;
         //Vector2 equipNeutralminusZ = equipNeutral.transform.position;
 
         // equip1 = inst1.transform.Find("equip").gameObject;
@@ -98,7 +98,7 @@ public class Manager : MonoBehaviour
 
         bool initialSpawn = true;
         //initialSpawnPoint i bild
-        if (inst1 == null && inst2 == null && swordInst1 == null && swordInst2 == null && initialSpawn == true)
+        if (inst1 == null && inst2 == null /*&& swordInst1 == null && swordInst2 == null && */&& initialSpawn == true)
         {
             //p1 spawnar
             inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
@@ -120,15 +120,15 @@ public class Manager : MonoBehaviour
             inst2.layer = 7;
             equip2 = inst2.transform.GetChild(0).gameObject;
 
-            instSword(swordInst1, equip1);
-            instSword(swordInst2, equip2);
+           // instSword(swordInst1, equip1);
+            //instSword(swordInst2, equip2);
 
             initialSpawn = false;
 
             while (initialSpawn == false)
             {
                 //initialSpawnPoint i bild
-                if (inst1 == null && inst2 == null && swordInst1 == null && swordInst2 == null)
+                if (inst1 == null && inst2 == null/* && swordInst1 == null && swordInst2 == null*/)
                 {
                     yield return new WaitForSeconds(1);
                     
@@ -151,11 +151,12 @@ public class Manager : MonoBehaviour
                     inst2.layer = 7;
                     equip2 = inst2.transform.GetChild(0).gameObject;
 
-                    instSword(swordInst1, equip1);
-                    instSword(swordInst2, equip2);
+                   // instSword(swordInst1, equip1);
+                    //instSword(swordInst2, equip2);
                 }
-
-                if (inst1 == null && swordInst1 == null)
+                ////////////////////////////////////////////////////
+                //om P1 dött ska den spawnas med svärd i näven
+                if (inst1 == null /*&& swordInst1 == null*/)
                 {
                     
                     //Debug.Log("inst1 == null");
@@ -169,12 +170,13 @@ public class Manager : MonoBehaviour
                     inst1.tag = "Player1";
                     inst1.layer = 6;
                     equip1 = inst1.transform.GetChild(0).gameObject;
-                    instSword(swordInst1, equip1);
+                   //instSword(swordInst1, equip1);
                     
 
                 }
                 /*
-                if (swordInst1 == null)
+                //om P1 kastat sitt svärd ska svärd spawnas utanför bild
+                if (inst1 != null && swordInst1 == null)
                 {
                     
                     yield return new WaitForSeconds(3);
@@ -187,8 +189,8 @@ public class Manager : MonoBehaviour
                 
                 }
                 */
-                
-                if (inst2 == null && swordInst2 == null)
+                //om P2 dött ska den spawnas med svärd
+                if (inst2 == null/*&& swordInst2 == null*/)
                 {
                     
                     yield return new WaitForSeconds(3);
@@ -206,7 +208,8 @@ public class Manager : MonoBehaviour
                     
                 }
                 /*
-                if (swordInst2 == null)
+                //om P2 kastat sitt svärd ska svärd spawnas utanför bild
+                if (inst2 != null && swordInst2 == null)
                 {
                     yield return new WaitForSeconds(3);
                     //är det denna som är fel?
@@ -217,15 +220,15 @@ public class Manager : MonoBehaviour
                     swordInst2.transform.localScale = new Vector3(0.3f * Player.transform.localScale.x, 0.3f * Player.transform.localScale.y, 0);
                     swordInst2.transform.localRotation = Quaternion.identity;
                 }
-                */
-                /*
+                //////////////////////////////////////////////////////////
+                
                 //kolla bara om swordInst (neutral) finns?
                 if (swordInst1 == null || swordInst2 == null) 
                 {
                     //går väldigt fort, byt till spawnPoint utanför bild?
                     yield return new WaitForSeconds(3);
                     
-                    swordInst = Instantiate(Sword, equipNeutralminusZ, Quaternion.identity);
+                    swordInst = Instantiate(Sword, spawnSwordP1minusZ, Quaternion.identity);
                     Debug.Log("swordInst spawnar neutralt");
                     
                     //swordInst.transform.localPosition = Vector3.zero;
@@ -237,6 +240,8 @@ public class Manager : MonoBehaviour
             }
         }
     }
+    
+    //instSword används enbart för svärd som spawnar i näven
     void instSword(GameObject swordInst, GameObject equipTransform)
     {
 
@@ -244,7 +249,7 @@ public class Manager : MonoBehaviour
         {
             swordInst = Instantiate(Sword, equipTransform.transform.position, Quaternion.identity);
             swordPop++;
-            Debug.Log("swordPop: " + swordPop);
+            //Debug.Log("swordPop: " + swordPop);
             //parent:a och nollställ pos//ärv inte scale!
             swordInst.transform.SetParent(equipTransform.transform);
             //hämta parentLayer, assigna?
@@ -255,7 +260,24 @@ public class Manager : MonoBehaviour
 
 
     }
-
+    
+    public void SwordTracker(GameObject objDestroy)
+    {
+        if (swordInst1 == objDestroy)
+        {
+            swordPop--;
+            new WaitForSecondsRealtime(3);
+           // instSword(swordInst1, equip1);
+        }
+        //Missing swordInst2 ref, spawnar ändå ingen ny
+        if (swordInst2 == objDestroy)
+        {
+            swordPop--;
+            new WaitForSecondsRealtime(3);
+           // instSword(swordInst2, equip2);
+        }
+    }
+    
     public void DeathTracker(GameObject objDestroy)
     {
         //kameran byter lock-on
@@ -266,7 +288,7 @@ public class Manager : MonoBehaviour
             //Debug.Log("p1 target");
             RunP2.SetActive(false);
             RunP1.SetActive(true);
-            swordPop--;
+            //swordPop--;
             //SwordTracker(swordInst2);
            
         }
@@ -277,26 +299,11 @@ public class Manager : MonoBehaviour
             //Debug.Log("p2 target");
             RunP1.SetActive(false);
             RunP2.SetActive(true);
-            swordPop--;
+            //swordPop--;
             //SwordTracker(swordInst1);
             
         }
 
     }
-    public void SwordTracker(GameObject objDestroy)
-    {
-        if (swordInst1 == objDestroy)
-        {
-            swordPop--;
-            new WaitForSecondsRealtime(3);
-            instSword(swordInst1, equip1);
-        }
-        //Missing swordInst2 ref, spawnar ändå ingen ny
-        if (swordInst2 == objDestroy)
-        {
-            swordPop--;
-            new WaitForSecondsRealtime(3);
-            instSword(swordInst2, equip2);
-        }
-    }
+
 }

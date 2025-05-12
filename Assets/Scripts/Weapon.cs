@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
         Manager = GameObject.FindWithTag("Manager");
 
         //alla svärd -> checka om parents lager är 6 eller 7
-
+        /*
         if (this.gameObject.transform.parent == null)
         {
             this.gameObject.layer = 0;
@@ -45,10 +45,9 @@ public class Weapon : MonoBehaviour
             this.gameObject.layer = 7;
             this.gameObject.transform.GetChild(0).gameObject.layer = 7;
         }
+        */
 
 
-
-        #region gammal prevent collision
         /*
         //gäller enbart sword/equippable grandchild
         if (gameObject.tag == "Sword")
@@ -63,7 +62,7 @@ public class Weapon : MonoBehaviour
             Debug.Log("thisBc2D: " + thisBc2D + " grannyBc2D: " + grannyBc2D);
         }
         */
-        #endregion
+
     }
 
     // Update is called once per frame
@@ -77,17 +76,20 @@ public class Weapon : MonoBehaviour
         //otherRb2D = other.GetComponent<Rigidbody2D>();
         
         //om det är fist eller foot - gör bara skada på other
-        if (gameObject.tag == "Weapon")
+        if (gameObject.tag == "Weapon" && other.gameObject.layer != 3 && other.isTrigger)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
             //other.GetComponent<Player>().damageTaken(1);
+            Debug.Log("jag "+this.gameObject.name + "krock med "+other.gameObject.name);
             other.GetComponentInParent<Player>().damageTaken(1);
+
         }
         //om svärdet kollide:ar när den har tilldelat lager (parent)
-        if (gameObject.tag == "Sword" && gameObject.layer != 0)
+       if (gameObject.tag == "Sword" && other.gameObject.layer != 3 && other.isTrigger)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
             //rad 91 får null ref
+            Debug.Log("jag " + this.gameObject.name + "krock med " + other.gameObject.name);
             other.GetComponentInParent<Player>().damageTaken(3);
             //static för att kunna passera om svärdet ligger på marken
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
@@ -96,6 +98,7 @@ public class Weapon : MonoBehaviour
         //om svärdet kollide:ar när den är neutral pick-up
 
         //DEN FÅR INTE KROCKA MED ANNAT SVÄRD I DETTA LÄGE
+        /*
         if (gameObject.tag == "Sword" && gameObject.layer == 0)
         {
             //aktiverar ej sitt child, zero gravity
@@ -115,7 +118,7 @@ public class Weapon : MonoBehaviour
                 Debug.Log("equip aldready equipped");
             }
             
-        }
+        }*/
 
     }
     public void ThrowSwordNow()
@@ -149,7 +152,7 @@ public class Weapon : MonoBehaviour
         {
             //kasta höger
             //rätt håll en gång,ibland?
-            Debug.Log(gameObject.transform.lossyScale.x + "större än 0");
+           // Debug.Log(gameObject.transform.lossyScale.x + "större än 0");
             gCollRb2D.velocity = new Vector2(throwSpeed, 0);            
             //rotation?
 

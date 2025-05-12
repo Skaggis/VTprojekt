@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 103397167}
   m_Layer: 0
-  m_Name: spawnSwordP1
+  m_Name: spawnSwordP2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1196,6 +1196,7 @@ MonoBehaviour:
   RunP1: {fileID: 691797431}
   RunP2: {fileID: 2088731762}
   Sword: {fileID: 1798184683213742894, guid: 997065e9947c2064bad807839f8b4c8c, type: 3}
+  swordPop: 0
   swordInst1: {fileID: 0}
   swordInst2: {fileID: 0}
   initialSpawnP1: {fileID: 726381557}
@@ -2169,7 +2170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2139135440}
   m_Layer: 0
-  m_Name: spawnSwordP2
+  m_Name: spawnSwordP1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
