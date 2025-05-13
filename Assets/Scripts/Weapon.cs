@@ -28,6 +28,11 @@ public class Weapon : MonoBehaviour
         gCollRb2D = this.GetComponentInChildren<Rigidbody2D>();
         Manager = GameObject.FindWithTag("Manager");
 
+        if (gameObject.tag == "Sword")
+        {
+            thisBc2D.enabled = false;
+        }
+
         //alla svärd -> checka om parents lager är 6 eller 7
         /*
         if (this.gameObject.transform.parent == null)
@@ -75,7 +80,7 @@ public class Weapon : MonoBehaviour
     {
         //otherRb2D = other.GetComponent<Rigidbody2D>();
         
-        //om det är fist eller foot - gör bara skada på other
+        //om det är fist eller foot - gör bara skada på other, ignorera marken
         if (gameObject.tag == "Weapon" && other.gameObject.layer != 3 && other.isTrigger)
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
@@ -89,7 +94,7 @@ public class Weapon : MonoBehaviour
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
             //rad 91 får null ref
-            Debug.Log("jag " + this.gameObject.name + "krock med " + other.gameObject.name);
+            Debug.Log("jag " + this.gameObject.name + " krock med " + other.gameObject.name);
             other.GetComponentInParent<Player>().damageTaken(3);
             //static för att kunna passera om svärdet ligger på marken
             //gCollRb2D.bodyType = RigidbodyType2D.Static;
@@ -135,7 +140,7 @@ public class Weapon : MonoBehaviour
         {
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
-
+        thisBc2D.enabled = true;
         //MÅSTE utgå från parents transform som startpos, även efter de-parenting
         //player scale -5 eller 5
         if (gameObject.transform.lossyScale.x < 0)

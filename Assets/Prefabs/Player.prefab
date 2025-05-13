@@ -313,12 +313,13 @@ MonoBehaviour:
   cam: {fileID: 0}
   sword: {fileID: 0}
   halfPlayerHeight: 0
-  jumpSpeed: 5
+  jumpSpeed: 10
   playerHP: 3
   movementSpeed: 20
   Rb2D: {fileID: 0}
   swordRb2D: {fileID: 0}
   Bc2D: {fileID: 0}
+  swordBc2D: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
   isPlayer1: 0

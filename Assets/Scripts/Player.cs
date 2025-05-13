@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D Rb2D;
     public Rigidbody2D swordRb2D;
     public BoxCollider2D Bc2D;
+    public BoxCollider2D swordBc2D;
     //public Vector2 colliderDimensions;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
@@ -52,13 +53,13 @@ public class Player : MonoBehaviour
         //child3/hurbox active när man inte har ett svärd
         sword = this.gameObject.transform.GetChild(0).GetChild(0).gameObject;
         sword.SetActive(true);
+        swordBc2D = sword.GetComponent<BoxCollider2D>();
         fist = this.gameObject.transform.GetChild(1).gameObject;
         fist.SetActive(false);
         foot = this.gameObject.transform.GetChild(2).gameObject;
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
-        //om svärd ej är equippat blir throw hiHit
         
         foreach (Transform child in transform)
         {
@@ -74,7 +75,7 @@ public class Player : MonoBehaviour
             //sword groundColl
             sword.transform.GetChild(0).gameObject.layer = 6;
             Manager.GetComponent<Manager>().swordInst1 = sword;
-            //Manager verkar tappa referensen?
+
         }
         else if (this.gameObject.layer == 7)
         {
@@ -122,6 +123,7 @@ public class Player : MonoBehaviour
             P2KeyBinds();
         }
         #region movement
+
         //RÖRELSE
         if (Rb2D.bodyType != RigidbodyType2D.Static)
         {
@@ -140,6 +142,8 @@ public class Player : MonoBehaviour
             transform.localScale = new Vector3(5, 5, 5);
 
         }
+
+
         #endregion
         #region jump/volt
         //HOPP
@@ -233,18 +237,25 @@ public class Player : MonoBehaviour
     #region goal
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.tag == "Player1" || other.gameObject.tag == "Player2")
+        {
+            //movementSpeed = 0;
+            //Rb2D.velocity = new Vector2(0, jumpSpeed);
+            Rb2D.velocity = new Vector2(0 * myInputX, Rb2D.velocity.y);
+        }
+
         //vem känner av detta? player boxcoll är ej trigger, hurtbox är det
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
             //volt ist för hopp
             goal = true;
-            //Debug.Log("P1 goal T");
+            Debug.Log("P1 goal");
         }
         if (isPlayer1 == false && other.tag == "Goal_P2")
         {
             //volt ist för hopp
             goal = true;
-            //Debug.Log("P2 goal T");
+            Debug.Log("P2 goal");
         }
     }
     #endregion
@@ -256,17 +267,30 @@ public class Player : MonoBehaviour
             isGrounded = true;
             //Debug.Log("grounded");
         }
+       //förhindra att de puttar varandra
+       /* if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
+        {
+            movementSpeed = 0;
+        }*/
+        
+
     }
     /*
-    void OnCollisionExit2D(Collision2D other)
+    private void OnCollisionExit2D(Collision2D other)
     {
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
+        {
+            movementSpeed = 20;
+        }
+        /*
         if (other.transform.tag == "Ground")
         {
             //isGrounded = false;
             Debug.Log("NOT grounded");
         }
-    }
-    */
+        
+    }*/
+
     #endregion
     #region P1binds
     void P1KeyBinds()
@@ -420,7 +444,7 @@ public class Player : MonoBehaviour
             isJumping = true;
         }
     }
-    #endregion //P2binds
+    #endregion
     #region damage
     public void damageTaken(int damageTaken)
     {
@@ -469,7 +493,8 @@ public class Player : MonoBehaviour
         if (activeChild == 0)
         {
             //aktivera svärdets box coll ist
-            sword.SetActive(true);
+            //sword.SetActive(true);
+            swordBc2D.enabled = true;
         }
         
         if (activeChild == 1)
@@ -494,7 +519,8 @@ public class Player : MonoBehaviour
         if (inactivateChild == 0)
         {
             //deaktivera svärdets box coll ist
-            sword.SetActive(false);
+            //sword.SetActive(false);
+            swordBc2D.enabled = false;
         }
         
         if (inactivateChild == 1)
@@ -511,5 +537,6 @@ public class Player : MonoBehaviour
             hurtBox.SetActive(false);
         }
     }
+    //anim event hit
 
 }
