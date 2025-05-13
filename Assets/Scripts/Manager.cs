@@ -28,8 +28,6 @@ public class Manager : MonoBehaviour
     public GameObject swordInst2;
     private GameObject swordInst;
 
-    
-
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
     public Transform spawnP1;
@@ -39,7 +37,7 @@ public class Manager : MonoBehaviour
     //spawnPos för inst = transform, gameobject för sword
     //neutral är ej neutral
     public Transform equipNeutral;
-    private GameObject kinRig;
+    //private GameObject kinRig;
 
     // Start is called before the first frame update
     //Awake samma som start fast lite före
@@ -54,14 +52,23 @@ public class Manager : MonoBehaviour
         RunP2 = cam.transform.GetChild(1).gameObject;
         RunP2.SetActive(false);
 
-        kinRig = Player.transform.GetChild(4).gameObject;
-        kinRig.SetActive(false);
+        //kinRig = Player.transform.GetChild(4).gameObject;
+        //kinRig.SetActive(false);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (inst1 == null && inst2 == null)
+        {
+            //neutralisera Target
+            cam.GetComponent<Target>().LockOn(cam.transform);
+            Debug.Log("no target");
+            RunP2.SetActive(false);
+            RunP1.SetActive(false);
+            //neutral target funkar men
+        }
         //hämta swordInst1 & 2 för att kunna checka om de ska spawna
 
         //swordInst1 = inst1.gameObject.transform.GetChild(0).GetChild(0);
@@ -94,7 +101,7 @@ public class Manager : MonoBehaviour
         Vector2 initialSpawnP2minusZ = initialSpawnP2.transform.position;
         Vector2 spawnP1minusZ = spawnP1.transform.position;
         Vector2 spawnP2minusZ = spawnP2.transform.position;
-       // Vector2 spawnSwordP1minusZ = spawnSwordP1.transform.position;
+        //Vector2 spawnSwordP1minusZ = spawnSwordP1.transform.position;
         //Vector2 spawnSwordP2minusZ = spawnSwordP2.transform.position;
         //Vector2 equipNeutralminusZ = equipNeutral.transform.position;
 
@@ -112,8 +119,7 @@ public class Manager : MonoBehaviour
             inst1.tag = "Player1";
             inst1.layer = 6;
             //equip1-variabel enbart för pos att spawna svärd på här,
-            //equip1 får layer tilldelat i Playerscript via: 
-            //child.gameObject.layer = gameObject.layer;
+            //equip1 får layer tilldelat i Player
             equip1 = inst1.transform.GetChild(0).gameObject;
             
             //p2 spawnar
@@ -129,25 +135,22 @@ public class Manager : MonoBehaviour
             //kinRig.layer = 9;
             //kinRig.SetActive(true);
 
-           
-           // instSword(swordInst1, equip1);
+            //instSword(swordInst1, equip1);
             //instSword(swordInst2, equip2);
 
             initialSpawn = false;
 
             while (initialSpawn == false)
             {
+                //vänta 3 sek för att hinna checka om båda ska spawna I BILD, när target = neutral
+                //de ska inte hinna spawna utanför bild för att programmet märkt att EN är död
+                yield return new WaitForSeconds(3);
+
                 //initialSpawnPoint i bild
                 if (inst1 == null && inst2 == null/* && swordInst1 == null && swordInst2 == null*/)
                 {
-                    yield return new WaitForSeconds(1);
-
-                    //neutralisera Target
-                    cam.GetComponent<Target>().LockOn(cam.transform);
-                    Debug.Log("no target");
-                    RunP2.SetActive(false);
-                    RunP1.SetActive(false);
-                    //neutral target funkar men
+                    //Debug.Log("3 sek har passerat");
+                    //yield return new WaitForSeconds(1);
 
                     initialSpawnP1minusZ = initialSpawnP1.transform.position;
                     inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
@@ -256,7 +259,43 @@ public class Manager : MonoBehaviour
             }
         }
     }
-    
+
+    public IEnumerator WaitBeforeToggle()
+    {
+        yield return new WaitForSeconds(1);
+    }
+    public void DeathTracker(GameObject objDestroy)
+    {
+        //StartCoroutine(WaitBeforeToggle());
+        //kameran byter lock-on
+        //om bara P1 finns
+        if (inst2 == objDestroy)
+        {
+            //skicka med ett längre offset-värde för att det är här den byter, inte "hänge med"?
+            cam.GetComponent<Target>().LockOn(inst1.transform);
+            //Debug.Log("p1 target");
+            //StartCoroutine(WaitBeforeToggle());
+            RunP2.SetActive(false);
+            RunP1.SetActive(true);
+
+            //swordPop--;
+            //SwordTracker(swordInst2);
+
+        }
+        //om bara P2 finns
+        if (inst1 == objDestroy)
+        {
+            cam.GetComponent<Target>().LockOn(inst2.transform);
+            //Debug.Log("p2 target");
+            RunP1.SetActive(false);
+            RunP2.SetActive(true);
+
+            //swordPop--;
+            //SwordTracker(swordInst1);
+
+        }
+
+    }
     //instSword används enbart för svärd som spawnar i näven
     void instSword(GameObject swordInst, GameObject equipTransform)
     {
@@ -293,33 +332,7 @@ public class Manager : MonoBehaviour
            // instSword(swordInst2, equip2);
         }
     }
-    
-    public void DeathTracker(GameObject objDestroy)
-    {
-        //kameran byter lock-on
-        //om bara P1 finns
-        if (inst2 == objDestroy)
-        {
-            cam.GetComponent<Target>().LockOn(inst1.transform);
-            //Debug.Log("p1 target");
-            RunP2.SetActive(false);
-            RunP1.SetActive(true);
-            //swordPop--;
-            //SwordTracker(swordInst2);
-           
-        }
-        //om bara P2 finns
-        if (inst1 == objDestroy)
-        {
-            cam.GetComponent<Target>().LockOn(inst2.transform);
-            //Debug.Log("p2 target");
-            RunP1.SetActive(false);
-            RunP2.SetActive(true);
-            //swordPop--;
-            //SwordTracker(swordInst1);
-            
-        }
 
-    }
+   
 
 }

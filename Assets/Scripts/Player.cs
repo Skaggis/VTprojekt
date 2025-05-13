@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     public int jumpSpeed;
     public int playerHP = 3;
     public int movementSpeed;
-    private int reSpeed;
+    //private int reSpeed;
 
 
     public Rigidbody2D Rb2D;
@@ -63,11 +63,11 @@ public class Player : MonoBehaviour
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
-        //kinRig = this.gameObject.transform.GetChild(4).gameObject;
-        //kinRig.SetActive(false);
+        kinRig = this.gameObject.transform.GetChild(4).gameObject;
+        kinRig.SetActive(true);
 
-        reSpeed = movementSpeed;
-        Debug.Log("START reSpeed: "+reSpeed);
+        //reSpeed = movementSpeed;
+        //Debug.Log("START reSpeed: "+reSpeed);
 
         foreach (Transform child in transform)
         {
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
 
         }
         //kinRig layer
-        kinRig = gameObject.transform.GetChild(4).gameObject;
+        //kinRig = gameObject.transform.GetChild(4).gameObject;
         // & sword layer
         if (this.gameObject.layer == 6)
         {
@@ -86,8 +86,8 @@ public class Player : MonoBehaviour
             Manager.GetComponent<Manager>().swordInst1 = sword;
 
             //enable kinRig+byt lager
-            kinRig.layer = 10;
-            kinRig.SetActive(true);
+            //kinRig.layer = 10;
+            //kinRig.SetActive(true);
 
         }
         else if (this.gameObject.layer == 7)
@@ -97,8 +97,8 @@ public class Player : MonoBehaviour
             Manager.GetComponent<Manager>().swordInst2 = sword;
 
             //enable kinRig+byt lager
-            kinRig.layer = 9;
-            kinRig.SetActive(true);
+            //kinRig.layer = 9;
+            //kinRig.SetActive(true);
         }
         
     }
@@ -281,7 +281,7 @@ public class Player : MonoBehaviour
     #region isGrounded
     //OnCollisionStay2D ?
     //will be called while the object is reacting with a collider, rather than the first time.
-    private void OnCollisionStay2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
         {                                                       
@@ -289,14 +289,15 @@ public class Player : MonoBehaviour
             //Debug.Log("grounded");
         }
        //förhindra att de puttar varandra
+        /*
         if (other.gameObject.layer == 9 || other.gameObject.layer == 10)
         {
             //current direction?
             movementSpeed = 0;
-        }
+        }*/
              
     }
-    
+    /*
     private void OnCollisionExit2D(Collision2D other)
     {
         
@@ -311,8 +312,9 @@ public class Player : MonoBehaviour
             //isGrounded = false;
             Debug.Log("NOT grounded");
         }
-        */
+        
     }
+*/
 
     #endregion
     #region P1binds
@@ -474,6 +476,12 @@ public class Player : MonoBehaviour
         //matas av Weapon-script
         playerHP = playerHP - damageTaken;
 
+        if (playerHP > 0)
+        {
+            animator.SetTrigger("hurt");
+            //Debug.Log("Player was hit\nHP: " + playerHP);
+        }
+
         if (playerHP <= 0)
         {
             //måste disable:a svärdets box coll vid död
@@ -487,26 +495,29 @@ public class Player : MonoBehaviour
             //static Rb2D för att inte falla genom marken
             Rb2D.bodyType = RigidbodyType2D.Static;
             hurtBox.SetActive(false);
-            //disable för att kunna kliva över kroppen
-            //tracka vilken inst av svärd som följde med in i döden för att spawna rätt svärd på nytt?
-            //Manager.GetComponent<Manager>().SwordTracker(sword);
-            Manager.GetComponent<Manager>().DeathTracker(gameObject);
+            kinRig.SetActive(false);
 
+            //Manager.GetComponent<Manager>().DeathTracker(gameObject);
+            StartCoroutine(DelayedDeathAnnouncement());
+            //irrelevant
+            //Manager.GetComponent<Manager>().SwordTracker(sword);
         }
-        if (playerHP > 0)
-        {
-            animator.SetTrigger("hurt");
-            //Debug.Log("Player was hit\nHP: " + playerHP);
-        }
+    }
+    private IEnumerator DelayedDeathAnnouncement()
+    {
+        yield return new WaitForSeconds(1.4f);
+        Manager.GetComponent<Manager>().DeathTracker(gameObject);
 
     }
     #endregion
     public void Die()
     {
-        //körs sista frame:n i Dead anim
+       // StartCoroutine(Manager.GetComponent<Manager>().WaitBeforeToggle());
+
+        //Manager.GetComponent<Manager>().DeathTracker(gameObject);
+        //körs sista frame:n i Dead anim som är 1:40 sek lång
         Destroy(gameObject);
-        
-       // Debug.Log("p1 target");
+        // Debug.Log("p1 target");
 
     }
     //anim event hit

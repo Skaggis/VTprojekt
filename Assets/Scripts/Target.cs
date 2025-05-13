@@ -33,8 +33,8 @@ public class Target : MonoBehaviour
             target = transform;
             
         }
-        
 
+        //följer INTE Y när man är i luften
         if (target != transform && !playerScript.isGrounded)//!isGrounded
         {
             //följer INTE Y
@@ -63,8 +63,10 @@ public class Target : MonoBehaviour
         //får någon gå utanför bild? bara target låst i bild?
 
         target = currentTarget;
+
+        //???
         playerScript = currentTarget.GetComponent<Player>();
-        //?!
+        
         //camSpeed = camSpeed / 2;
 
         offset = transform.position.y - target.position.y;
