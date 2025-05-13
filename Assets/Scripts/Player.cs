@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private GameObject foot;
     public GameObject sword;
     private GameObject hurtBox;
-    
+    private GameObject kinRig;
     // private bool throwSword = false;
 
     private float myInputX;
@@ -63,9 +63,10 @@ public class Player : MonoBehaviour
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
-       
+        //kinRig = this.gameObject.transform.GetChild(4).gameObject;
+        //kinRig.SetActive(false);
 
-        //reSpeed = movementSpeed;
+        reSpeed = movementSpeed;
         Debug.Log("START reSpeed: "+reSpeed);
 
         foreach (Transform child in transform)
@@ -74,8 +75,9 @@ public class Player : MonoBehaviour
             child.gameObject.layer = gameObject.layer;
 
         }
-        
-        //sword layer
+        //kinRig layer
+        kinRig = gameObject.transform.GetChild(4).gameObject;
+        // & sword layer
         if (this.gameObject.layer == 6)
         {
             sword.layer = 6;
@@ -83,12 +85,20 @@ public class Player : MonoBehaviour
             sword.transform.GetChild(0).gameObject.layer = 6;
             Manager.GetComponent<Manager>().swordInst1 = sword;
 
+            //enable kinRig+byt lager
+            kinRig.layer = 10;
+            kinRig.SetActive(true);
+
         }
         else if (this.gameObject.layer == 7)
         {
             sword.layer = 7;
             sword.transform.GetChild(0).gameObject.layer = 7;
             Manager.GetComponent<Manager>().swordInst2 = sword;
+
+            //enable kinRig+byt lager
+            kinRig.layer = 9;
+            kinRig.SetActive(true);
         }
         
     }
@@ -271,7 +281,7 @@ public class Player : MonoBehaviour
     #region isGrounded
     //OnCollisionStay2D ?
     //will be called while the object is reacting with a collider, rather than the first time.
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionStay2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
         {                                                       
@@ -279,19 +289,18 @@ public class Player : MonoBehaviour
             //Debug.Log("grounded");
         }
        //förhindra att de puttar varandra
-       /*
-        if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
+        if (other.gameObject.layer == 9 || other.gameObject.layer == 10)
         {
+            //current direction?
             movementSpeed = 0;
         }
-        
-        */
+             
     }
     
     private void OnCollisionExit2D(Collision2D other)
     {
-        /*
-        if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
+        
+        if (other.gameObject.layer == 9 || other.gameObject.layer == 10)
         {
             movementSpeed = reSpeed;
             Debug.Log("EXIT2d->reSpeed ska bli tidigare movementspeed: " + reSpeed);

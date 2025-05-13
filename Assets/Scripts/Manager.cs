@@ -28,7 +28,7 @@ public class Manager : MonoBehaviour
     public GameObject swordInst2;
     private GameObject swordInst;
 
-    private GameObject kinRig;
+    
 
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
@@ -39,7 +39,7 @@ public class Manager : MonoBehaviour
     //spawnPos för inst = transform, gameobject för sword
     //neutral är ej neutral
     public Transform equipNeutral;
-
+    private GameObject kinRig;
 
     // Start is called before the first frame update
     //Awake samma som start fast lite före
@@ -54,8 +54,8 @@ public class Manager : MonoBehaviour
         RunP2 = cam.transform.GetChild(1).gameObject;
         RunP2.SetActive(false);
 
-        //kinRig = Player.transform.GetChild(4).gameObject;
-        //kinRig.SetActive(false);
+        kinRig = Player.transform.GetChild(4).gameObject;
+        kinRig.SetActive(false);
 
     }
 
@@ -120,14 +120,16 @@ public class Manager : MonoBehaviour
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
             inst2.GetComponent<Player>().isPlayer1 = false;
-            kinRig = inst2.transform.GetChild(4).gameObject;
-            kinRig.layer = 9;
-            kinRig.SetActive(true);
             //inst2.GetComponent<Player>().Bc2D.enabled = true;
             inst2.tag = "Player2";
             inst2.layer = 7;
             equip2 = inst2.transform.GetChild(0).gameObject;
 
+            //kinRig = inst2.transform.GetChild(4).gameObject;
+            //kinRig.layer = 9;
+            //kinRig.SetActive(true);
+
+           
            // instSword(swordInst1, equip1);
             //instSword(swordInst2, equip2);
 
