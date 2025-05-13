@@ -28,6 +28,8 @@ public class Manager : MonoBehaviour
     public GameObject swordInst2;
     private GameObject swordInst;
 
+    private GameObject kinRig;
+
     public Transform initialSpawnP1;
     public Transform initialSpawnP2;
     public Transform spawnP1;
@@ -51,6 +53,9 @@ public class Manager : MonoBehaviour
         RunP1.SetActive(false);
         RunP2 = cam.transform.GetChild(1).gameObject;
         RunP2.SetActive(false);
+
+        //kinRig = Player.transform.GetChild(4).gameObject;
+        //kinRig.SetActive(false);
 
     }
 
@@ -115,6 +120,9 @@ public class Manager : MonoBehaviour
             inst2 = Instantiate(Player, initialSpawnP2minusZ, Quaternion.identity);
             inst2.transform.localScale = new Vector3(-inst2.transform.localScale.x, inst2.transform.localScale.y, inst2.transform.localScale.z);
             inst2.GetComponent<Player>().isPlayer1 = false;
+            kinRig = inst2.transform.GetChild(4).gameObject;
+            kinRig.layer = 9;
+            kinRig.SetActive(true);
             //inst2.GetComponent<Player>().Bc2D.enabled = true;
             inst2.tag = "Player2";
             inst2.layer = 7;
@@ -131,7 +139,13 @@ public class Manager : MonoBehaviour
                 if (inst1 == null && inst2 == null/* && swordInst1 == null && swordInst2 == null*/)
                 {
                     yield return new WaitForSeconds(1);
-                    
+
+                    //neutralisera Target
+                    cam.GetComponent<Target>().LockOn(cam.transform);
+                    Debug.Log("no target");
+                    RunP2.SetActive(false);
+                    RunP1.SetActive(false);
+                    //neutral target funkar men
 
                     initialSpawnP1minusZ = initialSpawnP1.transform.position;
                     inst1 = Instantiate(Player, initialSpawnP1minusZ, Quaternion.identity);
@@ -204,7 +218,7 @@ public class Manager : MonoBehaviour
                     inst2.tag = "Player2";
                     inst2.layer = 7;
                     equip2 = inst2.transform.GetChild(0).gameObject;
-                    instSword(swordInst2, equip2);
+                    //instSword(swordInst2, equip2);
                     
                 }
                 /*

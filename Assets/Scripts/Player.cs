@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private GameObject foot;
     public GameObject sword;
     private GameObject hurtBox;
+    
     // private bool throwSword = false;
 
     private float myInputX;
@@ -23,7 +24,9 @@ public class Player : MonoBehaviour
     public int jumpSpeed;
     public int playerHP = 3;
     public int movementSpeed;
-    
+    private int reSpeed;
+
+
     public Rigidbody2D Rb2D;
     public Rigidbody2D swordRb2D;
     public BoxCollider2D Bc2D;
@@ -60,7 +63,11 @@ public class Player : MonoBehaviour
         foot.SetActive(false);
         hurtBox = this.gameObject.transform.GetChild(3).gameObject;
         hurtBox.SetActive(true);
-        
+       
+
+        //reSpeed = movementSpeed;
+        Debug.Log("START reSpeed: "+reSpeed);
+
         foreach (Transform child in transform)
         {
             //equip, fist, foot, hurtbox
@@ -109,6 +116,7 @@ public class Player : MonoBehaviour
             //hurtBox.SetActive(true);
         }
         */
+        
         //INPUTS
         if (isPlayer1 == true)
         {
@@ -237,13 +245,14 @@ public class Player : MonoBehaviour
     #region goal
     private void OnTriggerEnter2D(Collider2D other)
     {
+        /*
         if (other.gameObject.tag == "Player1" || other.gameObject.tag == "Player2")
         {
             //movementSpeed = 0;
             //Rb2D.velocity = new Vector2(0, jumpSpeed);
             Rb2D.velocity = new Vector2(0 * myInputX, Rb2D.velocity.y);
         }
-
+        */
         //vem känner av detta? player boxcoll är ej trigger, hurtbox är det
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
@@ -260,6 +269,8 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region isGrounded
+    //OnCollisionStay2D ?
+    //will be called while the object is reacting with a collider, rather than the first time.
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.transform.tag == "Ground")
@@ -268,19 +279,22 @@ public class Player : MonoBehaviour
             //Debug.Log("grounded");
         }
        //förhindra att de puttar varandra
-       /* if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
-        {
-            movementSpeed = 0;
-        }*/
-        
-
-    }
-    /*
-    private void OnCollisionExit2D(Collision2D other)
-    {
+       /*
         if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
         {
-            movementSpeed = 20;
+            movementSpeed = 0;
+        }
+        
+        */
+    }
+    
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        /*
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 7)
+        {
+            movementSpeed = reSpeed;
+            Debug.Log("EXIT2d->reSpeed ska bli tidigare movementspeed: " + reSpeed);
         }
         /*
         if (other.transform.tag == "Ground")
@@ -288,8 +302,8 @@ public class Player : MonoBehaviour
             //isGrounded = false;
             Debug.Log("NOT grounded");
         }
-        
-    }*/
+        */
+    }
 
     #endregion
     #region P1binds
@@ -455,8 +469,8 @@ public class Player : MonoBehaviour
         {
             //måste disable:a svärdets box coll vid död
             //sword.SetActive(false);
-
-            sword.GetComponent<BoxCollider2D>().enabled = false;
+            //flyttade activaChild till kast-anim
+            //sword.GetComponent<BoxCollider2D>().enabled = false;
 
             Bc2D.enabled = false;
             //dead anim har event för Die-func

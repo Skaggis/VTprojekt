@@ -85,15 +85,15 @@ public class Weapon : MonoBehaviour
         {
             //Debug.Log(gameObject.tag + other.transform.parent.tag);
             //other.GetComponent<Player>().damageTaken(1);
-            Debug.Log("jag "+this.gameObject.name + "krock med "+other.gameObject.name);
+            Debug.Log("jag "+this.gameObject.name + " krock med "+other.gameObject.name);
             other.GetComponentInParent<Player>().damageTaken(1);
 
         }
         //om svärdet kollide:ar när den har tilldelat lager (parent)
        if (gameObject.tag == "Sword" && other.gameObject.layer != 3 && other.isTrigger)
         {
-            //Debug.Log(gameObject.tag + other.transform.parent.tag);
-            //rad 91 får null ref
+
+            //rad 98 null ref
             Debug.Log("jag " + this.gameObject.name + " krock med " + other.gameObject.name);
             other.GetComponentInParent<Player>().damageTaken(3);
             //static för att kunna passera om svärdet ligger på marken
@@ -140,7 +140,9 @@ public class Weapon : MonoBehaviour
         {
             yield return new WaitForFixedUpdate(); // Väntar en physics frame
         }
+        //nu kan svärdet göra skada
         thisBc2D.enabled = true;
+
         //MÅSTE utgå från parents transform som startpos, även efter de-parenting
         //player scale -5 eller 5
         if (gameObject.transform.lossyScale.x < 0)
@@ -172,7 +174,8 @@ public class Weapon : MonoBehaviour
         //static body?
 
         //groundCollider.SetActive(true);
-        Destroy(gameObject, 1f);
+        //tidigare 1f destroy
+        Destroy(gameObject, 5f);
         //kalla på ny Spawna svärd-funktion???
         Manager.GetComponent<Manager>().swordPop--;
         Manager.GetComponent<Manager>().SwordTracker(gameObject);
