@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     public int movementSpeed;
     //private int reSpeed;
 
-
     public Rigidbody2D Rb2D;
     public Rigidbody2D swordRb2D;
     public BoxCollider2D Bc2D;
@@ -264,6 +263,12 @@ public class Player : MonoBehaviour
         }
         */
         //vem känner av detta? player boxcoll är ej trigger, hurtbox är det
+        if(other.tag == "death")
+        {
+            //garantera
+            damageTaken(playerHP);
+        }
+
         if (isPlayer1 == true && other.tag == "Goal_P1")
         {
             //volt ist för hopp

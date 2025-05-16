@@ -55,7 +55,7 @@ public class Target : MonoBehaviour
         }
 
     }
-
+   
     public void LockOn(Transform currentTarget)
     {
         //matas av DeathTracker i Manager

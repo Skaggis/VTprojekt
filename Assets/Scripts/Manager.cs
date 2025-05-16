@@ -39,7 +39,7 @@ public class Manager : MonoBehaviour
     public Transform equipNeutral;
     //private GameObject kinRig;
 
-    // Start is called before the first frame update
+    //Start is called before the first frame update
     //Awake samma som start fast lite före
     void Awake()
     {
@@ -47,9 +47,9 @@ public class Manager : MonoBehaviour
         StartCoroutine(Spawner());
         cam = GameObject.Find("Main Camera").gameObject;
   
-        RunP1 = cam.transform.GetChild(0).gameObject;
+        RunP1 = cam.transform.GetChild(0).GetChild(0).gameObject;
         RunP1.SetActive(false);
-        RunP2 = cam.transform.GetChild(1).gameObject;
+        RunP2 = cam.transform.GetChild(0).GetChild(1).gameObject;
         RunP2.SetActive(false);
 
         //kinRig = Player.transform.GetChild(4).gameObject;
@@ -109,6 +109,10 @@ public class Manager : MonoBehaviour
         // equip2 = inst2.transform.Find("equip").gameObject;
 
         bool initialSpawn = true;
+
+        // playerScript.goal måste va false för att man ska få spawna
+        //lättare att skicka bool till bool? vilken inst är det som har playerscript atm?
+        //if (playerScript.goal)
         //initialSpawnPoint i bild
         if (inst1 == null && inst2 == null /*&& swordInst1 == null && swordInst2 == null && */&& initialSpawn == true)
         {

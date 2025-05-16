@@ -14,6 +14,7 @@ TagManager:
   - Sword
   - equip
   - groundCollider
+  - death
   layers:
   - Default
   - TransparentFX
@@ -50,4 +51,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: background
+    uniqueID: 1908819473
+    locked: 0
+  - name: terrainCollider
+    uniqueID: 816970177
+    locked: 0
+  - name: terrain
+    uniqueID: 4126440801
+    locked: 0
+  - name: players
+    uniqueID: 3665265847
+    locked: 0
+  - name: terrain2
+    uniqueID: 2309935659
+    locked: 0
+  - name: terrain3Arrow
+    uniqueID: 248246441
     locked: 0
