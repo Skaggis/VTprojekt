@@ -125,7 +125,10 @@ public class Player : MonoBehaviour
             //hurtBox.SetActive(true);
         }
         */
-        
+        if (goal == true)
+        {
+            Manager.GetComponent<Manager>().StopAllCoroutines();
+        }
         //INPUTS
         if (isPlayer1 == true)
         {

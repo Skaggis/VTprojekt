@@ -64,7 +64,7 @@ public class Target : MonoBehaviour
 
         target = currentTarget;
 
-        //???
+        //uppadatering
         playerScript = currentTarget.GetComponent<Player>();
         
         //camSpeed = camSpeed / 2;

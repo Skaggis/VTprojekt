@@ -1,0 +1,30 @@
+vision
+- bli klar med grunden till nidhogg
+
+gick det som planerat?
+- längre ifrån på slutet
+- nästan, mer instabilt
+- hade velat komma till vfx och juice, ljud + musik
+- hade velat exportera och spela i webbläsare
+
+lärt mig
+- mer kod, vana med funktioner
+- hade varit önskvärt att spika grafik/anim och allmän design för att låta det styra scripting
+
+utmanande
+- frustrerande dålig på kod
+- brottas med unity - bristande förståelse för editorn
+- dåligt upplägg från början med inbyggd fysik och att ej jobba med lager
+och att jag inte visste hur grafiken skulle va -> gav upp
+- för långa script, borde delat upp mer
+- animator :(((
+- "ngn att prata med", sätt att dokumentera under arbetets gång, satt ibland LÄNGE och försökte lösa ngt jag redan jobbat på, tappar bort migsjälv/förvirrad tjej
+
+nöjd med
+- löste cam follow y target
+- hålla det enkelt, på gott och ont
+- implementera ray-cast till min egen förvåning
+- rimlig nivå ändå, tydlig planering, "steg-för-steg"
+
+
+
